@@ -1,6 +1,7 @@
-# 바탕 지도 데이터 만들기
-# OpenStreetMap 데이터(Protomaps 일일 빌드)에서 tools/basemap/area.env 범위만 잘라
-# data/basemap.pmtiles 로 이 브랜치에 올린다. data/ 폴더는 사이트에 올라가지 않는다.
+# 바탕 지도 만들기
+# tools/basemap/areas/*.env 의 지역마다 OpenStreetMap 데이터(Protomaps 일일 빌드)를 잘라
+# 사이트용 지도 조각(public/tiles)과 public/js/tilesets.js 를 만들어 이 브랜치에 올린다.
+# 잘라 온 원본(data/*.pmtiles)은 올리지 않는다.
 name: basemap
 
 on:
@@ -9,7 +10,10 @@ on:
     branches-ignore: [main]
     paths:
       - .github/workflows/basemap.yml
-      - tools/basemap/area.env
+      - tools/basemap/areas/**
+      - tools/basemap/split.mjs
+      - tools/basemap/package.json
+      - tools/basemap/package-lock.json
 
 permissions:
   contents: write
@@ -19,14 +23,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  extract:
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read area
-        run: grep -E '^[A-Z_]+=' tools/basemap/area.env >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
 
       - name: Get pmtiles tool
         env:
@@ -57,38 +62,44 @@ jobs:
           echo "BUILD_KEY=$KEY" >> "$GITHUB_ENV"
           echo "build: $KEY"
 
-      - name: Extract area
+      - name: Extract areas
         run: |
           set -euo pipefail
-          ./pmtiles-cli extract "https://build.protomaps.com/$BUILD_KEY" basemap.pmtiles \
-            --bbox="$BBOX" --maxzoom="$MAXZOOM" --download-threads=8
-          ls -l basemap.pmtiles
+          mkdir -p data
+          for f in tools/basemap/areas/*.env; do
+            NAME=$(grep -E '^NAME=' "$f" | cut -d= -f2)
+            BBOX=$(grep -E '^BBOX=' "$f" | cut -d= -f2)
+            MAXZOOM=$(grep -E '^MAXZOOM=' "$f" | cut -d= -f2)
+            echo "== $NAME  bbox=$BBOX  maxzoom=$MAXZOOM"
+            ./pmtiles-cli extract "https://build.protomaps.com/$BUILD_KEY" "data/$NAME.pmtiles" \
+              --bbox="$BBOX" --maxzoom="$MAXZOOM" --download-threads=8
+            {
+              echo "build: $BUILD_KEY"
+              echo "bbox: $BBOX"
+              echo "maxzoom: $MAXZOOM"
+              echo "bytes: $(stat -c %s "data/$NAME.pmtiles")"
+              echo "made: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+              echo
+              ./pmtiles-cli show "data/$NAME.pmtiles" || true
+            } > "data/$NAME-info.txt" 2>&1
+          done
+          ls -l data
+
+      - name: Split into site tiles
+        working-directory: tools/basemap
+        run: |
+          npm ci --no-audit --no-fund
+          node split.mjs
 
       - name: Commit result
         run: |
           set -euo pipefail
-          mkdir -p data
-          SIZE=$(stat -c %s basemap.pmtiles)
-          {
-            echo "build: $BUILD_KEY"
-            echo "bbox: $BBOX"
-            echo "maxzoom: $MAXZOOM"
-            echo "bytes: $SIZE"
-            echo "made: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            echo
-            ./pmtiles-cli show basemap.pmtiles || true
-          } > data/basemap-info.txt 2>&1
-          if [ "$SIZE" -lt 95000000 ]; then
-            mv basemap.pmtiles data/basemap.pmtiles
-          else
-            echo "too big for git, not committed" >> data/basemap-info.txt
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git add data/
-          git commit -m "바탕 지도 데이터: ${BUILD_KEY%.pmtiles}" || { echo "nothing to commit"; exit 0; }
+          git add -A public/tiles public/js/tilesets.js data/*-info.txt
+          git commit -q -m "바탕 지도 조각: ${BUILD_KEY%.pmtiles}" || { echo "nothing to commit"; exit 0; }
           for i in 1 2 3; do
-            git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME" && exit 0
+            git pull -q --rebase origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && exit 0
             sleep 5
           done
           exit 1

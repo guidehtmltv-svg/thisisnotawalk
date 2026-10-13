@@ -4,3 +4,6 @@ node_modules/
 *.log
 .env
 .wrangler/
+
+# 잘라 온 원본 지도 데이터 (GitHub Actions에서만 쓴다)
+data/*.pmtiles
