@@ -1,0 +1,33 @@
+build: 20261013.pmtiles
+bbox: 124.5,33.0,131.0,38.7
+maxzoom: 11
+bytes: 40029219
+made: 2026-10-13T16:20:30Z
+
+pmtiles spec version: 3
+tile type: mvt
+bounds: (long: 124.500000, lat: 33.000000) (long: 131.000000, lat: 38.700000)
+min zoom: 0
+max zoom: 11
+center: (long: 127.750000, lat: 35.850000)
+center zoom: 0
+addressed tiles count: 2122
+tile entries count: 1670
+tile contents count: 1455
+clustered: true
+internal compression: gzip
+tile compression: gzip
+version 4.15.2
+vector_layers <object, use --metadata to view full JSON metadata>
+attribution <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>
+description Basemap layers derived from OpenStreetMap and Natural Earth
+name Protomaps Basemap
+pgf:devanagari:version 1
+planetiler:buildtime 2026-03-28T14:41:39.524Z
+planetiler:osm:osmosisreplicationseq 123453
+planetiler:osm:osmosisreplicationtime 2026-10-13T04:00:00Z
+pgf:devanagari:name NotoSansDevanagari-Regular
+planetiler:githash 0e5588c4a6e8c29a270a33afe8df62027d889604
+planetiler:osm:osmosisreplicationurl https://planet.osm.org/replication/hour/
+planetiler:version 0.10.2
+type baselayer
