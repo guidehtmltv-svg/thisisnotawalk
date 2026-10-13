@@ -6,6 +6,7 @@
 ## 지금 상태
 
 - 시안 버전이 올라가 있다. 코스 값은 기획서의 예시이고, 경로선도 예시로 그린 선이다.
+- 바탕 지도는 OpenStreetMap 데이터로 그린 종이 지도다 (2026-10-13 데이터). 고양·파주·김포 밖은 종이를 한 겹 덮어 흐리게 보인다.
 - 공개 전까지 검색 노출을 막아 둔다 (`index.html`의 `<meta name="robots" content="noindex, nofollow">`). 공개할 때 지운다.
 
 ## 정해진 것
@@ -23,9 +24,16 @@
 
 | 파일 | 내용 |
 | --- | --- |
-| `public/index.html` | 지도 화면 (시안). 약도는 행정동 경계와 한강으로 그렸다. |
+| `public/index.html` | 지도 화면 (시안). 코스 데이터와 화면 코드가 들어 있다. |
+| `public/js/basemap.js` | 바탕 지도 색과 그리는 규칙 (밝은 화면·어두운 화면) |
+| `public/tiles/<날짜>/` | 바탕 지도 조각 (9~15줌, gzip). `tools/basemap/split.mjs`가 만든다. 손으로 고치지 않는다. |
+| `public/vendor/` | Leaflet 1.9.4, protomaps-leaflet 5.1.0 (사이트에서 직접 내려보낸다. 라이선스는 `LICENSES.txt`) |
+| `public/_headers` | 지도 조각과 라이브러리는 브라우저에 1년 보관 (주소에 날짜·버전이 들어 있어서 안전하다) |
 | `public/favicon.svg` | 탭 아이콘 |
 | `wrangler.jsonc` | Cloudflare 배포 설정. `public/` 폴더만 사이트로 올라간다. |
+| `tools/basemap/` | 지도 범위(`area.env`)와 조각 만드는 도구(`split.mjs`) |
+| `data/` | 잘라 온 원본 지도 데이터(`basemap.pmtiles`)와 정보. 사이트에 올라가지 않는다. |
+| `.github/workflows/basemap.yml` | 원본 지도 데이터를 잘라 오는 GitHub Actions 작업 |
 
 사이트에 보일 파일은 반드시 `public/` 안에 둔다. 그 밖의 파일(README, 설정, 작업용 스크립트)은 사이트에 올라가지 않는다.
 
@@ -34,15 +42,24 @@
 - `main` 브랜치에 올라간 내용이 Cloudflare Workers Builds를 거쳐 자동으로 배포된다 (thisisnotawalk.guide-htmltv.workers.dev, 도메인 연결 후 thisisnotawalk.com).
 - 새 작업은 별도 브랜치에 올려 Cloudflare가 만들어 주는 미리보기 주소(preview URL)에서 먼저 확인하고, 웅님이 확인하면 `main`에 합친다.
 
+## 바탕 지도 새로 받기
+
+OpenStreetMap은 매일 바뀐다. 몇 달에 한 번, 또는 코스 근처 길이 바뀌었을 때 새로 받는다.
+
+1. `tools/basemap/area.env`의 범위를 고치거나 날짜 주석만 바꿔서 `main`이 아닌 브랜치에 올린다. GitHub Actions의 `basemap` 작업이 Protomaps 일일 빌드에서 범위만 잘라 `data/basemap.pmtiles`로 올려 준다 (몇 분).
+2. `tools/basemap`에서 `npm install` 후 `node split.mjs`. 옛 조각을 지우고 `public/tiles/<새 날짜>/`를 만들고 `public/js/basemap.js`의 타일 주소를 고친다.
+3. 화면을 확인하고 올린다. `main`에 합칠 때 `data/basemap.pmtiles`(약 38MB)는 빼고 합친다.
+
+조각을 만들 때 지도에 그리지 않는 것(가게, 버스정류장, 주소, 주거지·공장 색, 군사시설 구역, 읍면동 경계)은 빼고 이름은 한국어 하나만 남긴다.
+
 ## 데이터 출처
 
-- 행정동 경계: 통계청 SGIS(공공누리 제1유형), 가공본 [vuski/admdongkor](https://github.com/vuski/admdongkor) (CC BY 4.0)
-- 한강 폭은 시·구 경계선을 따라 어림해 그렸다.
-- 앞으로 쓸 바탕 지도: © OpenStreetMap contributors (ODbL)
+- 바탕 지도: © OpenStreetMap contributors (ODbL), 타일 구성 [Protomaps Basemap](https://protomaps.com)
+- 고양·파주·김포 테두리, 시·구 이름 자리: 통계청 SGIS(공공누리 제1유형), 가공본 [vuski/admdongkor](https://github.com/vuski/admdongkor) (CC BY 4.0)
 
 ## 다음 작업 (2단계)
 
-1. 바탕 지도를 OpenStreetMap 지역 데이터로 바꾸기
+1. ~~바탕 지도를 OpenStreetMap 지역 데이터로 바꾸기~~ (osm-map 브랜치)
 2. 코스마다 따로 주소가 있는 코스 페이지 만들기
 3. 사진을 넣으면 화면 크기별 웹용 사진이 자동으로 만들어지게 하기
 4. 휴대폰 확인과 속도 측정
