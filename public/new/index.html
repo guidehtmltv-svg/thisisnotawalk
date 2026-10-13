@@ -1,0 +1,1300 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="일로, 요이와 직접 걸어본 길만 올립니다. 고양·파주 반려견 산책 코스 지도.">
+<meta name="theme-color" content="#F5EFE7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1D1C1A" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>일,요사진이 걸어본 길</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&display=swap">
+<style>[hidden]{display:none!important}img{max-width:100%}</style>
+<style>
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-tile-container,
+.leaflet-pane > svg,
+.leaflet-pane > canvas,
+.leaflet-zoom-box,
+.leaflet-image-layer,
+.leaflet-layer {
+	position: absolute;
+	left: 0;
+	top: 0;
+	}
+.leaflet-container {
+	overflow: hidden;
+	}
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	        user-select: none;
+	  -webkit-user-drag: none;
+	}
+.leaflet-tile::selection {
+	background: transparent;
+}
+.leaflet-safari .leaflet-tile {
+	image-rendering: -webkit-optimize-contrast;
+	}
+.leaflet-safari .leaflet-tile-container {
+	width: 1600px;
+	height: 1600px;
+	-webkit-transform-origin: 0 0;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+	display: block;
+	}
+.leaflet-container .leaflet-overlay-pane svg {
+	max-width: none !important;
+	max-height: none !important;
+	}
+.leaflet-container .leaflet-marker-pane img,
+.leaflet-container .leaflet-shadow-pane img,
+.leaflet-container .leaflet-tile-pane img,
+.leaflet-container img.leaflet-image-layer,
+.leaflet-container .leaflet-tile {
+	max-width: none !important;
+	max-height: none !important;
+	width: auto;
+	padding: 0;
+	}
+.leaflet-container img.leaflet-tile {
+	mix-blend-mode: plus-lighter;
+}
+.leaflet-container.leaflet-touch-zoom {
+	-ms-touch-action: pan-x pan-y;
+	touch-action: pan-x pan-y;
+	}
+.leaflet-container.leaflet-touch-drag {
+	-ms-touch-action: pinch-zoom;
+	touch-action: none;
+	touch-action: pinch-zoom;
+}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.leaflet-container {
+	-webkit-tap-highlight-color: transparent;
+}
+.leaflet-container a {
+	-webkit-tap-highlight-color: rgba(51, 181, 229, 0.4);
+}
+.leaflet-tile {
+	filter: inherit;
+	visibility: hidden;
+	}
+.leaflet-tile-loaded {
+	visibility: inherit;
+	}
+.leaflet-zoom-box {
+	width: 0;
+	height: 0;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	z-index: 800;
+	}
+.leaflet-overlay-pane svg {
+	-moz-user-select: none;
+	}
+.leaflet-pane         { z-index: 400; }
+.leaflet-tile-pane    { z-index: 200; }
+.leaflet-overlay-pane { z-index: 400; }
+.leaflet-shadow-pane  { z-index: 500; }
+.leaflet-marker-pane  { z-index: 600; }
+.leaflet-tooltip-pane   { z-index: 650; }
+.leaflet-popup-pane   { z-index: 700; }
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+.leaflet-vml-shape {
+	width: 1px;
+	height: 1px;
+	}
+.leaflet-control {
+	position: relative;
+	z-index: 800;
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+.leaflet-top,
+.leaflet-bottom {
+	position: absolute;
+	z-index: 1000;
+	pointer-events: none;
+	}
+.leaflet-top {
+	top: 0;
+	}
+.leaflet-right {
+	right: 0;
+	}
+.leaflet-bottom {
+	bottom: 0;
+	}
+.leaflet-left {
+	left: 0;
+	}
+.leaflet-control {
+	float: left;
+	clear: both;
+	}
+.leaflet-right .leaflet-control {
+	float: right;
+	}
+.leaflet-top .leaflet-control {
+	margin-top: 10px;
+	}
+.leaflet-bottom .leaflet-control {
+	margin-bottom: 10px;
+	}
+.leaflet-left .leaflet-control {
+	margin-left: 10px;
+	}
+.leaflet-right .leaflet-control {
+	margin-right: 10px;
+	}
+.leaflet-fade-anim .leaflet-popup {
+	opacity: 0;
+	-webkit-transition: opacity 0.2s linear;
+	   -moz-transition: opacity 0.2s linear;
+	        transition: opacity 0.2s linear;
+	}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	opacity: 1;
+	}
+.leaflet-zoom-animated {
+	-webkit-transform-origin: 0 0;
+	    -ms-transform-origin: 0 0;
+	        transform-origin: 0 0;
+	}
+svg.leaflet-zoom-animated {
+	will-change: transform;
+}
+.leaflet-zoom-anim .leaflet-zoom-animated {
+	-webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1);
+	   -moz-transition:    -moz-transform 0.25s cubic-bezier(0,0,0.25,1);
+	        transition:         transform 0.25s cubic-bezier(0,0,0.25,1);
+	}
+.leaflet-zoom-anim .leaflet-tile,
+.leaflet-pan-anim .leaflet-tile {
+	-webkit-transition: none;
+	   -moz-transition: none;
+	        transition: none;
+	}
+.leaflet-zoom-anim .leaflet-zoom-hide {
+	visibility: hidden;
+	}
+.leaflet-interactive {
+	cursor: pointer;
+	}
+.leaflet-grab {
+	cursor: -webkit-grab;
+	cursor:    -moz-grab;
+	cursor:         grab;
+	}
+.leaflet-crosshair,
+.leaflet-crosshair .leaflet-interactive {
+	cursor: crosshair;
+	}
+.leaflet-popup-pane,
+.leaflet-control {
+	cursor: auto;
+	}
+.leaflet-dragging .leaflet-grab,
+.leaflet-dragging .leaflet-grab .leaflet-interactive,
+.leaflet-dragging .leaflet-marker-draggable {
+	cursor: move;
+	cursor: -webkit-grabbing;
+	cursor:    -moz-grabbing;
+	cursor:         grabbing;
+	}
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-image-layer,
+.leaflet-pane > svg path,
+.leaflet-tile-container {
+	pointer-events: none;
+	}
+.leaflet-marker-icon.leaflet-interactive,
+.leaflet-image-layer.leaflet-interactive,
+.leaflet-pane > svg path.leaflet-interactive,
+svg.leaflet-image-layer.leaflet-interactive path {
+	pointer-events: visiblePainted; 
+	pointer-events: auto;
+	}
+.leaflet-container {
+	background: #ddd;
+	outline-offset: 1px;
+	}
+.leaflet-container a {
+	color: #0078A8;
+	}
+.leaflet-zoom-box {
+	border: 2px dotted #38f;
+	background: rgba(255,255,255,0.5);
+	}
+.leaflet-container {
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-size: 0.75rem;
+	line-height: 1.5;
+	}
+.leaflet-bar {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+	border-radius: 4px;
+	}
+.leaflet-bar a {
+	background-color: #fff;
+	border-bottom: 1px solid #ccc;
+	width: 26px;
+	height: 26px;
+	line-height: 26px;
+	display: block;
+	text-align: center;
+	text-decoration: none;
+	color: black;
+	}
+.leaflet-bar a,
+.leaflet-control-layers-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+	}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus {
+	background-color: #f4f4f4;
+	}
+.leaflet-bar a:first-child {
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	}
+.leaflet-bar a:last-child {
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: none;
+	}
+.leaflet-bar a.leaflet-disabled {
+	cursor: default;
+	background-color: #f4f4f4;
+	color: #bbb;
+	}
+.leaflet-touch .leaflet-bar a {
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	}
+.leaflet-touch .leaflet-bar a:first-child {
+	border-top-left-radius: 2px;
+	border-top-right-radius: 2px;
+	}
+.leaflet-touch .leaflet-bar a:last-child {
+	border-bottom-left-radius: 2px;
+	border-bottom-right-radius: 2px;
+	}
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	text-indent: 1px;
+	}
+.leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out  {
+	font-size: 22px;
+	}
+.leaflet-control-layers {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 5px;
+	}
+.leaflet-touch .leaflet-control-layers-toggle {
+	width: 44px;
+	height: 44px;
+	}
+.leaflet-control-layers .leaflet-control-layers-list,
+.leaflet-control-layers-expanded .leaflet-control-layers-toggle {
+	display: none;
+	}
+.leaflet-control-layers-expanded .leaflet-control-layers-list {
+	display: block;
+	position: relative;
+	}
+.leaflet-control-layers-expanded {
+	padding: 6px 10px 6px 6px;
+	color: #333;
+	background: #fff;
+	}
+.leaflet-control-layers-scrollbar {
+	overflow-y: scroll;
+	overflow-x: hidden;
+	padding-right: 5px;
+	}
+.leaflet-control-layers-selector {
+	margin-top: 2px;
+	position: relative;
+	top: 1px;
+	}
+.leaflet-control-layers label {
+	display: block;
+	font-size: 13px;
+	font-size: 1.08333em;
+	}
+.leaflet-control-layers-separator {
+	height: 0;
+	border-top: 1px solid #ddd;
+	margin: 5px -10px 5px -6px;
+	}
+.leaflet-container .leaflet-control-attribution {
+	background: #fff;
+	background: rgba(255, 255, 255, 0.8);
+	margin: 0;
+	}
+.leaflet-control-attribution,
+.leaflet-control-scale-line {
+	padding: 0 5px;
+	color: #333;
+	line-height: 1.4;
+	}
+.leaflet-control-attribution a {
+	text-decoration: none;
+	}
+.leaflet-control-attribution a:hover,
+.leaflet-control-attribution a:focus {
+	text-decoration: underline;
+	}
+.leaflet-attribution-flag {
+	display: inline !important;
+	vertical-align: baseline !important;
+	width: 1em;
+	height: 0.6669em;
+	}
+.leaflet-left .leaflet-control-scale {
+	margin-left: 5px;
+	}
+.leaflet-bottom .leaflet-control-scale {
+	margin-bottom: 5px;
+	}
+.leaflet-control-scale-line {
+	border: 2px solid #777;
+	border-top: none;
+	line-height: 1.1;
+	padding: 2px 5px 1px;
+	white-space: nowrap;
+	-moz-box-sizing: border-box;
+	     box-sizing: border-box;
+	background: rgba(255, 255, 255, 0.8);
+	text-shadow: 1px 1px #fff;
+	}
+.leaflet-control-scale-line:not(:first-child) {
+	border-top: 2px solid #777;
+	border-bottom: none;
+	margin-top: -2px;
+	}
+.leaflet-control-scale-line:not(:first-child):not(:last-child) {
+	border-bottom: 2px solid #777;
+	}
+.leaflet-touch .leaflet-control-attribution,
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	box-shadow: none;
+	}
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+	border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+	}
+.leaflet-popup {
+	position: absolute;
+	text-align: center;
+	margin-bottom: 20px;
+	}
+.leaflet-popup-content-wrapper {
+	padding: 1px;
+	text-align: left;
+	border-radius: 12px;
+	}
+.leaflet-popup-content {
+	margin: 13px 24px 13px 20px;
+	line-height: 1.3;
+	font-size: 13px;
+	font-size: 1.08333em;
+	min-height: 1px;
+	}
+.leaflet-popup-content p {
+	margin: 17px 0;
+	margin: 1.3em 0;
+	}
+.leaflet-popup-tip-container {
+	width: 40px;
+	height: 20px;
+	position: absolute;
+	left: 50%;
+	margin-top: -1px;
+	margin-left: -20px;
+	overflow: hidden;
+	pointer-events: none;
+	}
+.leaflet-popup-tip {
+	width: 17px;
+	height: 17px;
+	padding: 1px;
+	margin: -10px auto 0;
+	pointer-events: auto;
+	-webkit-transform: rotate(45deg);
+	   -moz-transform: rotate(45deg);
+	    -ms-transform: rotate(45deg);
+	        transform: rotate(45deg);
+	}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+	background: white;
+	color: #333;
+	box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+	}
+.leaflet-container a.leaflet-popup-close-button {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border: none;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	font: 16px/24px Tahoma, Verdana, sans-serif;
+	color: #757575;
+	text-decoration: none;
+	background: transparent;
+	}
+.leaflet-container a.leaflet-popup-close-button:hover,
+.leaflet-container a.leaflet-popup-close-button:focus {
+	color: #585858;
+	}
+.leaflet-popup-scrolled {
+	overflow: auto;
+	}
+.leaflet-oldie .leaflet-popup-content-wrapper {
+	-ms-zoom: 1;
+	}
+.leaflet-oldie .leaflet-popup-tip {
+	width: 24px;
+	margin: 0 auto;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)";
+	filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678);
+	}
+.leaflet-oldie .leaflet-control-zoom,
+.leaflet-oldie .leaflet-control-layers,
+.leaflet-oldie .leaflet-popup-content-wrapper,
+.leaflet-oldie .leaflet-popup-tip {
+	border: 1px solid #999;
+	}
+.leaflet-div-icon {
+	background: #fff;
+	border: 1px solid #666;
+	}
+.leaflet-tooltip {
+	position: absolute;
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	color: #222;
+	white-space: nowrap;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	pointer-events: none;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+	}
+.leaflet-tooltip.leaflet-interactive {
+	cursor: pointer;
+	pointer-events: auto;
+	}
+.leaflet-tooltip-top:before,
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	position: absolute;
+	pointer-events: none;
+	border: 6px solid transparent;
+	background: transparent;
+	content: "";
+	}
+.leaflet-tooltip-bottom {
+	margin-top: 6px;
+}
+.leaflet-tooltip-top {
+	margin-top: -6px;
+}
+.leaflet-tooltip-bottom:before,
+.leaflet-tooltip-top:before {
+	left: 50%;
+	margin-left: -6px;
+	}
+.leaflet-tooltip-top:before {
+	bottom: 0;
+	margin-bottom: -12px;
+	border-top-color: #fff;
+	}
+.leaflet-tooltip-bottom:before {
+	top: 0;
+	margin-top: -12px;
+	margin-left: -6px;
+	border-bottom-color: #fff;
+	}
+.leaflet-tooltip-left {
+	margin-left: -6px;
+}
+.leaflet-tooltip-right {
+	margin-left: 6px;
+}
+.leaflet-tooltip-left:before,
+.leaflet-tooltip-right:before {
+	top: 50%;
+	margin-top: -6px;
+	}
+.leaflet-tooltip-left:before {
+	right: 0;
+	margin-right: -12px;
+	border-left-color: #fff;
+	}
+.leaflet-tooltip-right:before {
+	left: 0;
+	margin-left: -12px;
+	border-right-color: #fff;
+	}
+@media print {
+	.leaflet-control {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+		}
+	}
+</style>
+<style>
+:root{
+  /* Layout: a paper 약도 fills the screen. Title bar on top, legend plaque bottom-left,
+     course card = bottom sheet on phones / right-hand panel on desktop,
+     course page slides over the map as one reading column. */
+  --paper:#F5EFE7;      /* 일,요 종이색 */
+  --paper-2:#EBE3D7;    /* 바깥 지역, 사진 자리 */
+  --water:#DDD9D1;      /* 한강·바다 */
+  --ink:#24211D;        /* 먹 */
+  --ink-2:#625C53;      /* 보조 글자 */
+  --ink-3:#9A9286;      /* 지명, 빈칸 */
+  --rule:#D7CDBF;       /* 머리카락 선 */
+  --lift:0 1px 0 rgba(36,33,29,.05),0 14px 34px -12px rgba(36,33,29,.30);
+  --serif:"Noto Serif KR","Noto Serif CJK KR","Nanum Myeongjo","AppleMyungjo","Batang",ui-serif,serif;
+  --t-xs:.6875rem; --t-s:.8125rem; --t-m:.9375rem; --t-l:1.0625rem; --t-xl:1.5rem;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#1D1C1A; --paper-2:#252321; --water:#2A2D2E;
+    --ink:#EEE7DC; --ink-2:#ADA59A; --ink-3:#757065; --rule:#3B3631;
+    --lift:0 1px 0 rgba(0,0,0,.35),0 16px 36px -12px rgba(0,0,0,.75);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1D1C1A; --paper-2:#252321; --water:#2A2D2E;
+  --ink:#EEE7DC; --ink-2:#ADA59A; --ink-3:#757065; --rule:#3B3631;
+  --lift:0 1px 0 rgba(0,0,0,.35),0 16px 36px -12px rgba(0,0,0,.75);
+  color-scheme:dark;
+}
+
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:var(--t-m);line-height:1.6;overflow:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+p{margin:0}
+h1,h2{margin:0}
+
+#app{position:relative;height:100%;overflow:hidden}
+#map{position:absolute;inset:0}
+.leaflet-container{background:var(--water);font-family:var(--serif);outline-offset:-2px}
+.maperr{position:absolute;inset:0;display:grid;place-items:center;color:var(--ink-2);padding-inline:16px;text-align:center}
+
+/* ---------- base map (OpenStreetMap, js/basemap.js) ---------- */
+.map .basemap{background:var(--paper)}
+/* 고양·파주·김포 밖은 종이로 한 겹 덮어 흐리게 */
+.lf-mask{fill:var(--paper);fill-opacity:.62;stroke:none}
+.lf-area{fill:none;stroke:var(--ink-3);stroke-width:1;stroke-opacity:.75;stroke-linejoin:round}
+.lf-case{fill:none;stroke:var(--paper);stroke-width:7;stroke-opacity:1;stroke-linecap:round;stroke-linejoin:round}
+.lf-route{fill:none;stroke:var(--ink);stroke-width:2;stroke-opacity:.7;stroke-linecap:round;stroke-linejoin:round;transition:stroke-width .15s}
+.lf-route.sel{stroke-width:3.2;stroke-opacity:1}
+.lf-route.gpx{stroke-dasharray:8 5;stroke-width:3;stroke-opacity:1}
+.lf-start-gpx{fill:var(--ink);fill-opacity:1;stroke:var(--paper);stroke-width:2;stroke-opacity:1}
+/* 멀리서 볼 때는 점, 가까이 가면 선 */
+.map.zl .lf-case:not(.gpx),.map.zl .lf-route:not(.gpx),.map.zm .lf-case:not(.gpx),.map.zm .lf-route:not(.gpx){display:none}
+
+.lbl-wrap{width:0!important;height:0!important;background:none;border:0}
+.lbl{position:absolute;left:0;top:0;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;color:var(--ink-3);font-size:.6875rem;letter-spacing:.04em;line-height:1;
+  text-shadow:0 0 2px var(--paper),0 0 2px var(--paper),0 0 4px var(--paper)}
+.lbl-city{font-size:1.125rem;font-weight:500;letter-spacing:.6em;padding-left:.6em}
+.lbl-gu{font-size:.8125rem;letter-spacing:.28em;padding-left:.28em;color:var(--ink-2)}
+.lbl-river{font-size:.875rem;letter-spacing:1.4em;padding-left:1.4em;color:var(--ink-2);text-shadow:none}
+.lbl-city,.lbl-gu{display:none}
+.map.zl .lbl-city{display:block}
+.lbl.out{opacity:.5}
+/* 멀리서 볼 때는 걸어볼 길 이름을 숨긴다 (고르면 보인다) */
+.map.zl .pin.planned:not(.sel) .pl{display:none}
+.map.zm .lbl-gu{display:block}
+
+/* ---------- course pins ---------- */
+.pin-wrap{width:0!important;height:0!important;background:none;border:0;outline:none}
+.pin{position:absolute;left:0;top:0;cursor:pointer}
+.pin .dot{position:absolute;left:-7px;top:-7px;width:14px;height:14px;border-radius:50%;background:var(--ink);box-shadow:0 0 0 2.5px var(--paper);transition:transform .15s}
+.pin .dot::after{content:"";position:absolute;inset:-12px;border-radius:50%}
+.pin.planned .dot{left:-6px;top:-6px;width:12px;height:12px;box-sizing:border-box;background:var(--paper);border:1.5px solid var(--ink)}
+.pin .pl{position:absolute;top:-.8em;white-space:nowrap;font-size:var(--t-s);line-height:1.6;font-weight:500;color:var(--ink);
+  background:var(--paper);padding:0 4px;border-radius:1px}
+.pin .pl.r{left:9px}
+.pin .pl.l{right:9px}
+.pin.planned .pl{color:var(--ink-2);font-weight:400}
+.pin.sel .dot{transform:scale(1.35)}
+.pin.sel .pl{font-weight:700;color:var(--ink)}
+.pin-wrap:focus-visible .dot{outline:2px solid var(--ink);outline-offset:5px}
+
+/* ---------- top bar ---------- */
+.bar{position:absolute;z-index:1000;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;background:var(--paper);border-bottom:1px solid var(--rule)}
+.brand{min-width:0;display:grid}
+.brand-name{font-size:var(--t-l);font-weight:700;letter-spacing:-.01em;line-height:1.35;white-space:nowrap}
+.brand-sub{font-size:var(--t-xs);color:var(--ink-2);line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;margin-left:6px;padding:0 5px;border:1px solid var(--ink-3);font-size:.625rem;font-weight:400;letter-spacing:.12em;line-height:1.5;vertical-align:3px;color:var(--ink-2)}
+.bar-actions{display:flex;gap:6px;flex-shrink:0}
+.tbtn{font-size:var(--t-s);line-height:1.4;background:transparent;border:1px solid var(--rule);padding:6px 10px;border-radius:2px;cursor:pointer}
+.tbtn:hover{border-color:var(--ink-2)}
+.tbtn[aria-expanded="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tbtn .long{display:none}
+@media (min-width:560px){.tbtn .long{display:inline}}
+
+/* ---------- legend ---------- */
+.legend{position:absolute;z-index:900;left:16px;bottom:34px;background:var(--paper);border:1px solid var(--rule);padding:10px 14px;display:grid;gap:2px;font-size:var(--t-s);min-width:172px;max-width:min(250px,calc(100% - 32px))}
+.legend .row{display:flex;align-items:center;gap:8px}
+.legend .n{margin-left:auto;padding-left:16px;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.g-walked,.g-planned{width:10px;height:10px;border-radius:50%;flex:none;box-sizing:border-box}
+.g-walked{background:var(--ink)}
+.g-planned{border:1.5px solid var(--ink)}
+.legend .hint{margin-top:6px;padding-top:7px;border-top:1px solid var(--rule);font-size:var(--t-xs);color:var(--ink-2);line-height:1.55}
+
+/* ---------- leaflet controls ---------- */
+.leaflet-container .leaflet-bar{border:1px solid var(--rule);border-radius:2px;box-shadow:none}
+.leaflet-container .leaflet-bar a{width:34px;height:34px;line-height:32px;font:400 20px/32px var(--serif);background:var(--paper);color:var(--ink);border-bottom:1px solid var(--rule)}
+.leaflet-container .leaflet-bar a:last-child{border-bottom:0}
+.leaflet-container .leaflet-bar a:hover{background:var(--paper-2)}
+.leaflet-container .leaflet-bar a.leaflet-disabled{background:var(--paper);color:var(--ink-3)}
+.leaflet-bottom.leaflet-right .leaflet-control-zoom{margin-bottom:28px;margin-right:16px}
+@media (max-width:640px){.leaflet-control-zoom{display:none}}
+.leaflet-container .leaflet-control-attribution{background:color-mix(in srgb,var(--paper) 86%,transparent);color:var(--ink-2);font-size:10px;line-height:1.5;padding:1px 6px;max-width:calc(100vw - 16px);white-space:normal}
+.leaflet-container .leaflet-control-attribution a{color:var(--ink-2)}
+
+/* ---------- course card ---------- */
+.card{position:absolute;z-index:1100;left:0;right:0;bottom:0;box-sizing:border-box;background:var(--paper);border-top:1px solid var(--rule);box-shadow:var(--lift);
+  padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:10px;max-height:64%;overflow:auto}
+@media (min-width:900px){.card{left:auto;right:16px;top:74px;bottom:auto;width:360px;border:1px solid var(--rule);padding:20px}}
+.card:not([hidden]){animation:rise .2s ease-out}
+@keyframes rise{from{transform:translateY(10px);opacity:.4}to{transform:none;opacity:1}}
+.kicker{font-size:var(--t-xs);letter-spacing:.14em;color:var(--ink-2)}
+.card-title{font-size:var(--t-xl);font-weight:700;line-height:1.25;letter-spacing:-.01em;text-wrap:balance;padding-right:28px}
+.meta{font-size:var(--t-s);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.one{font-size:var(--t-m);line-height:1.6}
+.muted{color:var(--ink-2)}
+.actions{display:flex;gap:8px;margin-top:6px}
+.btn{flex:1;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:var(--t-s);line-height:1.4;padding:10px 12px;border:1px solid var(--ink);background:transparent;color:var(--ink);text-decoration:none;border-radius:2px;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--paper-2)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{opacity:.88}
+.x{position:absolute;right:6px;top:6px;width:40px;height:40px;border:0;background:none;color:var(--ink-2);font-size:22px;line-height:1;cursor:pointer}
+.x:hover{color:var(--ink)}
+
+/* surface bar: soft = light texture, hard = solid ink */
+.sbar{display:flex;height:10px;border:1px solid var(--ink);overflow:hidden}
+.sbar i{display:block;height:100%}
+.sbar i + i{border-left:1px solid var(--ink)}
+.s-soil{background:radial-gradient(circle,var(--ink-2) .75px,transparent 1.15px) 0 0/4px 4px,var(--paper)}
+.s-mat{background:repeating-linear-gradient(45deg,var(--ink-2) 0 1px,transparent 1px 4px),var(--paper)}
+.s-deck{background:repeating-linear-gradient(90deg,var(--ink-2) 0 1px,transparent 1px 4px),var(--paper)}
+.s-paved{background:var(--ink)}
+.slegend{display:flex;flex-wrap:wrap;gap:2px 14px;margin:6px 0 0;padding:0;list-style:none;font-size:var(--t-xs);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.slegend li{display:flex;align-items:center;gap:6px}
+.slegend .sw{display:block;width:14px;height:8px;border:1px solid var(--ink)}
+
+/* ---------- list ---------- */
+.list{position:absolute;z-index:1200;top:0;bottom:0;left:0;width:360px;max-width:100%;box-sizing:border-box;background:var(--paper);border-right:1px solid var(--rule);box-shadow:var(--lift);display:flex;flex-direction:column}
+@media (max-width:640px){.list{width:100%;border-right:0}}
+.list-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 8px 12px 16px;border-bottom:1px solid var(--ink)}
+.list-head h2{font-size:var(--t-l)}
+.list-body{overflow:auto;padding-bottom:24px}
+.grp{padding:16px 16px 6px;font-size:var(--t-xs);letter-spacing:.14em;color:var(--ink-2);display:flex;justify-content:space-between}
+.list ul{list-style:none;margin:0;padding:0}
+.item{width:100%;display:grid;grid-template-columns:14px 1fr auto;gap:2px 12px;align-items:baseline;text-align:left;padding:12px 16px;border:0;border-bottom:1px solid var(--rule);background:none;cursor:pointer}
+.item:hover{background:var(--paper-2)}
+.item .g-walked,.item .g-planned{transform:translateY(1px)}
+.item .nm{font-weight:500;min-width:0}
+.item .ar{grid-column:2;font-size:var(--t-xs);color:var(--ink-2)}
+.item .km{grid-row:1;grid-column:3;font-size:var(--t-s);color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+/* ---------- course page ---------- */
+.page{position:absolute;inset:0;z-index:1500;background:var(--paper);overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page:not([hidden]){animation:fadein .2s ease-out}
+@keyframes fadein{from{opacity:.3}to{opacity:1}}
+.page-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:8px 16px;background:var(--paper);border-bottom:1px solid var(--rule)}
+.back{border:0;background:none;padding:6px 0;font-size:var(--t-s);cursor:pointer;white-space:nowrap}
+.page-bar-title{font-size:var(--t-s);color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.sheet{max-width:680px;margin:0 auto;padding:28px 16px 72px;display:grid;gap:36px}
+.sample-note{font-size:var(--t-xs);color:var(--ink-2);border:1px solid var(--rule);padding:8px 12px;line-height:1.6}
+.sheet-head{display:grid;gap:8px}
+.sheet h1{font-size:clamp(1.875rem,6vw,2.625rem);font-weight:700;line-height:1.2;letter-spacing:-.015em;text-wrap:balance;outline:none}
+.byline{font-size:var(--t-s);color:var(--ink-2)}
+.start{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:var(--t-s)}
+.start .lab{color:var(--ink-2)}
+.copy{font-size:var(--t-xs);border:1px solid var(--rule);background:none;padding:2px 8px;border-radius:2px;cursor:pointer;color:var(--ink-2)}
+.copy:hover{border-color:var(--ink-2);color:var(--ink)}
+.slot{margin:0;box-sizing:border-box;max-width:100%;border:1px solid var(--rule);background:var(--paper-2);display:grid;place-items:center;color:var(--ink-3);font-size:var(--t-xs);letter-spacing:.12em;text-align:center;padding:8px}
+.slot-hero{aspect-ratio:3/2}
+.sec{font-size:var(--t-xs);font-weight:500;letter-spacing:.16em;color:var(--ink-2);padding-bottom:10px;border-bottom:1px solid var(--ink)}
+.spec{margin:0}
+.spec > div{display:grid;grid-template-columns:4.75em 1fr;gap:12px;padding:13px 0;border-bottom:1px solid var(--rule)}
+.spec dt{font-size:var(--t-s);color:var(--ink-2);letter-spacing:.06em;padding-top:1px}
+.spec dd{margin:0;min-width:0}
+.spec .surf{display:grid;gap:2px;padding-top:6px}
+.todo{color:var(--ink-3)}
+.plan{margin:0;display:grid;gap:10px}
+.plan svg{display:block;width:100%;height:auto;max-width:100%;border:1px solid var(--rule);background:var(--paper)}
+.plan figcaption{font-size:var(--t-xs);color:var(--ink-2);line-height:1.6}
+.pl-grid{stroke:var(--rule);stroke-width:1;fill:none}
+.pl-route{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.pl-chev{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.pl-start{fill:var(--ink);stroke:var(--paper);stroke-width:2}
+.pl-end{fill:var(--paper);stroke:var(--ink);stroke-width:1.6}
+.pl-scale{stroke:var(--ink);stroke-width:1.4;fill:none}
+.pl-txt{fill:var(--ink-2);font-family:var(--serif);font-size:12px}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.row-actions .btn{flex:1 1 160px}
+.note p{padding-top:14px;line-height:1.85}
+.shots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding-top:14px}
+.shots .slot{aspect-ratio:4/5}
+.shots-cap{font-size:var(--t-xs);color:var(--ink-2);padding-top:8px}
+.cta{border:1px solid var(--ink);padding:22px 20px;display:grid;gap:8px}
+.cta-k{font-size:var(--t-xs);letter-spacing:.16em;color:var(--ink-2)}
+.cta-t{font-size:var(--t-xl);font-weight:700;line-height:1.3}
+.cta-s{color:var(--ink-2);font-size:var(--t-s)}
+.cta .btn{margin-top:8px;flex:none;justify-self:start;padding-inline:20px}
+.foot{display:grid;gap:4px;font-size:var(--t-xs);color:var(--ink-2);line-height:1.7;border-top:1px solid var(--rule);padding-top:16px}
+
+/* ---------- misc ---------- */
+.toast{position:absolute;z-index:2000;left:50%;top:70px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;font-size:var(--t-s);line-height:1.5;border-radius:2px;max-width:calc(100% - 32px);box-sizing:border-box;text-align:center}
+.drop{position:absolute;z-index:1800;inset:12px;border:1.5px dashed var(--ink);background:color-mix(in srgb,var(--paper) 82%,transparent);display:grid;place-items:center;font-size:var(--t-l);pointer-events:none;text-align:center;padding-inline:16px}
+
+@media (prefers-reduced-motion:reduce){
+  .card:not([hidden]),.page:not([hidden]){animation:none}
+  .pin .dot,.lf-route{transition:none}
+}
+</style>
+<style>.bar{padding-top:calc(10px + env(safe-area-inset-top,0px))}</style>
+</head>
+<body>
+<div id="app">
+  <header class="bar">
+    <div class="brand">
+      <p class="brand-name">일,요사진이 걸어본 길<span class="tag">시안</span></p>
+      <p class="brand-sub">일로, 요이와 직접 걸어본 길만 올립니다</p>
+    </div>
+    <div class="bar-actions">
+      <button class="tbtn" id="btn-list" aria-expanded="false" aria-controls="list">목록</button>
+      <button class="tbtn" id="btn-gpx" title="GPX 파일을 지도에 끌어다 놓아도 됩니다">GPX<span class="long"> 불러오기</span></button>
+    </div>
+  </header>
+
+  <div id="map" class="map" role="region" aria-label="산책 코스 지도"></div>
+
+  <div class="legend" aria-label="범례">
+    <div class="row"><i class="g-walked" aria-hidden="true"></i>걸어본 길<span class="n" id="n-walked">0</span></div>
+    <div class="row"><i class="g-planned" aria-hidden="true"></i>걸어볼 길<span class="n" id="n-planned">0</span></div>
+    <p class="hint">시안 · 예시 데이터입니다. 가민이나 휴대폰에서 내보낸 GPX를 불러오면 실제 걸은 길을 그려 봅니다.</p>
+  </div>
+
+  <aside id="card" class="card" hidden aria-live="polite"></aside>
+
+  <aside id="list" class="list" hidden aria-label="길 목록">
+    <div class="list-head"><h2>길 목록</h2><button class="x" style="position:static" id="list-close" aria-label="목록 닫기">×</button></div>
+    <div class="list-body" id="list-body"></div>
+  </aside>
+
+  <section id="detail" class="page" hidden aria-label="코스 페이지"></section>
+
+  <div id="drop" class="drop" hidden>GPX 파일을 놓으면 지도에 그려 봅니다</div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <input type="file" id="gpx-input" hidden>
+</div>
+
+<script src="/vendor/leaflet-1.9.4.js"></script>
+<script src="/vendor/protomaps-leaflet-5.1.0.js"></script>
+<script src="/js/basemap.js"></script>
+<script>
+const GEO={"bounds":[[37.55,126.5],[38.02,127.03]],"city":[{"n":"고양","l":[37.66407,126.82699]},{"n":"파주","l":[37.77367,126.73982]},{"n":"김포","l":[37.67819,126.60838]},{"n":"서울","l":[37.59941,126.94087],"o":1}],"gu":[{"n":"덕양구","l":[37.6231,126.85144]},{"n":"일산동구","l":[37.6765,126.812]},{"n":"일산서구","l":[37.67564,126.7247]},{"n":"파주시","l":[37.77367,126.73982]},{"n":"김포시","l":[37.67819,126.60838]}],"riverLabels":[{"n":"한강","l":[37.6453,126.72672],"r":29.4},{"n":"한강","l":[37.74147,126.67579],"r":79.1}],"area":[[[37.70314,126.52728],[37.71273,126.51851],[37.7216,126.51846],[37.72619,126.51966],[37.73809,126.52602],[37.7484,126.52784],[37.76466,126.51458],[37.76695,126.51456],[37.7719,126.53633],[37.77059,126.54058],[37.76898,126.55515],[37.76756,126.55884],[37.76505,126.56163],[37.76157,126.56135],[37.75603,126.56676],[37.75509,126.56889],[37.75381,126.58043],[37.75774,126.59201],[37.75657,126.59981],[37.75323,126.60397],[37.75291,126.60947],[37.76228,126.62261],[37.77236,126.62882],[37.77843,126.63894],[37.78128,126.64908],[37.78452,126.667],[37.78595,126.66638],[37.78743,126.66328],[37.79015,126.66216],[37.79864,126.66506],[37.81207,126.66605],[37.83105,126.67396],[37.83287,126.67176],[37.83472,126.67138],[37.83466,126.66891],[37.83883,126.6602],[37.84024,126.65935],[37.8436,126.66096],[37.84319,126.66501],[37.84577,126.67101],[37.84398,126.67621],[37.84597,126.6796],[37.85169,126.6799],[37.85865,126.68593],[37.86843,126.69218],[37.87401,126.68342],[37.87283,126.68153],[37.87034,126.68014],[37.87006,126.67261],[37.87443,126.67523],[37.87722,126.67193],[37.87799,126.67207],[37.87717,126.67552],[37.87972,126.68206],[37.88152,126.67875],[37.88405,126.68021],[37.88461,126.67974],[37.88461,126.67649],[37.88164,126.67565],[37.88215,126.67255],[37.8859,126.67448],[37.88796,126.67016],[37.88869,126.6722],[37.89773,126.67737],[37.90446,126.67702],[37.90618,126.67586],[37.91111,126.68045],[37.9128,126.6828],[37.9126,126.68457],[37.91558,126.68144],[37.91433,126.67848],[37.91428,126.6701],[37.91834,126.66592],[37.92205,126.66577],[37.92797,126.66921],[37.93269,126.66756],[37.93709,126.66929],[37.93971,126.67185],[37.9414,126.66906],[37.94468,126.6694],[37.94845,126.67237],[37.95197,126.67069],[37.9557,126.67038],[37.95546,126.67294],[37.95351,126.67637],[37.95578,126.67918],[37.95751,126.67967],[37.95811,126.6813],[37.9572,126.68731],[37.96031,126.6882],[37.96104,126.69001],[37.96336,126.69118],[37.96624,126.69156],[37.96925,126.69832],[37.96912,126.70066],[37.97432,126.70249],[37.97564,126.7077],[37.97351,126.70966],[37.97059,126.70948],[37.9684,126.71204],[37.96886,126.71665],[37.96569,126.71773],[37.96495,126.71939],[37.9665,126.72197],[37.96688,126.72557],[37.96868,126.72778],[37.96744,126.73506],[37.96582,126.73658],[37.9664,126.73757],[37.9727,126.73996],[37.97422,126.74455],[37.9765,126.74698],[37.97903,126.74806],[37.98165,126.75216],[37.98366,126.75864],[37.98338,126.76054],[37.98505,126.76312],[37.98454,126.76511],[37.97835,126.7728],[37.98041,126.77533],[37.98235,126.77182],[37.984,126.77348],[37.98445,126.77586],[37.98046,126.78224],[37.98103,126.78385],[37.98227,126.78362],[37.99231,126.79369],[37.99369,126.7964],[37.992,126.80091],[37.98771,126.7985],[37.97075,126.80451],[37.96767,126.81045],[37.9693,126.81252],[37.96822,126.81471],[37.96409,126.81847],[37.96129,126.81754],[37.95852,126.81886],[37.95746,126.82073],[37.9598,126.8283],[37.96398,126.83268],[37.96473,126.83678],[37.97331,126.83781],[37.98095,126.84023],[37.98501,126.84398],[37.98744,126.85027],[37.98724,126.85494],[37.97115,126.87184],[37.96767,126.87874],[37.96614,126.88776],[37.96803,126.89346],[37.9722,126.89543],[37.98084,126.89198],[37.98819,126.89116],[37.99238,126.89174],[37.99945,126.89469],[37.98593,126.92163],[37.98228,126.9317],[37.98173,126.93568],[37.98239,126.94091],[37.988,126.95246],[37.99765,126.96166],[38.00333,126.96957],[38.00366,126.97866],[38.00469,126.98208],[38.00314,126.98581],[38.00337,126.99215],[38.0014,126.99609],[37.99625,127.00099],[37.99231,127.01528],[37.98693,127.01704],[37.98457,127.0126],[37.97612,127.01129],[37.97325,127.00644],[37.97393,127.00078],[37.9732,126.99635],[37.96694,126.99122],[37.96009,126.98852],[37.95659,126.98176],[37.95408,126.97912],[37.94614,126.97744],[37.94431,126.97621],[37.94203,126.97336],[37.94203,126.97032],[37.93934,126.96689],[37.93902,126.96482],[37.93294,126.96409],[37.92824,126.96505],[37.92527,126.96184],[37.92291,126.962],[37.92016,126.96002],[37.92234,126.95633],[37.91896,126.9496],[37.91247,126.95473],[37.90871,126.95316],[37.90535,126.94918],[37.89964,126.94673],[37.89675,126.94854],[37.88846,126.946],[37.88465,126.94808],[37.88047,126.94649],[37.87947,126.9471],[37.87363,126.94426],[37.86699,126.94634],[37.85699,126.93977],[37.85406,126.9385],[37.8525,126.93887],[37.84939,126.93562],[37.84624,126.93451],[37.84079,126.93649],[37.83857,126.93298],[37.83805,126.92728],[37.84159,126.92533],[37.84107,126.91393],[37.84024,126.91238],[37.83846,126.91193],[37.83603,126.913],[37.82864,126.91136],[37.82639,126.90299],[37.82472,126.90231],[37.82005,126.90562],[37.81648,126.91022],[37.81051,126.90879],[37.80824,126.91164],[37.80615,126.91191],[37.80359,126.90672],[37.8021,126.90555],[37.79095,126.90389],[37.79168,126.9146],[37.79039,126.91952],[37.78821,126.92128],[37.78508,126.92721],[37.78878,126.9321],[37.78694,126.93812],[37.77994,126.93338],[37.77421,126.93629],[37.77069,126.9328],[37.76758,126.93391],[37.75759,126.92869],[37.75536,126.93165],[37.75392,126.932],[37.74812,126.92974],[37.74538,126.93299],[37.74284,126.93006],[37.73751,126.93102],[37.7359,126.93006],[37.73513,126.92643],[37.73194,126.92261],[37.73018,126.92189],[37.72857,126.92341],[37.72501,126.92307],[37.71991,126.92504],[37.71368,126.92047],[37.71173,126.92454],[37.70787,126.92467],[37.70307,126.92241],[37.69903,126.92174],[37.68791,126.91415],[37.679,126.9145],[37.67439,126.91138],[37.67397,126.90827],[37.67542,126.90688],[37.6734,126.90614],[37.67026,126.90805],[37.6687,126.91134],[37.66959,126.92036],[37.67146,126.92043],[37.67193,126.92178],[37.6707,126.92803],[37.67229,126.93006],[37.67236,126.93195],[37.67076,126.93982],[37.67309,126.94293],[37.67645,126.94458],[37.67943,126.94308],[37.68513,126.94479],[37.68772,126.95101],[37.69265,126.95444],[37.69149,126.95996],[37.69236,126.96577],[37.68668,126.97299],[37.68542,126.98207],[37.67878,126.99257],[37.66648,126.99426],[37.66502,126.99284],[37.66334,126.98802],[37.6593,126.985],[37.6558,126.97943],[37.64746,126.98464],[37.64582,126.98494],[37.64369,126.98322],[37.64191,126.98411],[37.64065,126.98637],[37.63656,126.98463],[37.63139,126.97507],[37.63229,126.97179],[37.63698,126.96876],[37.63868,126.96882],[37.64516,126.96173],[37.65265,126.95677],[37.65475,126.95462],[37.65495,126.95125],[37.65899,126.94708],[37.65706,126.94103],[37.65193,126.93704],[37.65064,126.93473],[37.6504,126.92974],[37.64556,126.92127],[37.64471,126.91389],[37.64877,126.90555],[37.64649,126.90758],[37.64438,126.91223],[37.64169,126.91247],[37.64016,126.91082],[37.63511,126.90982],[37.63252,126.90653],[37.62905,126.90881],[37.62539,126.90794],[37.62403,126.90644],[37.6195,126.90524],[37.6188,126.90339],[37.61246,126.90103],[37.60382,126.90208],[37.60315,126.90026],[37.59937,126.90149],[37.59618,126.90136],[37.59266,126.89899],[37.58987,126.89984],[37.58862,126.89696],[37.58859,126.88726],[37.59109,126.88544],[37.59384,126.88658],[37.59339,126.88482],[37.5862,126.87763],[37.58412,126.87667],[37.57975,126.87763],[37.5789,126.87708],[37.57885,126.87335],[37.57584,126.86495],[37.57586,126.86172],[37.57386,126.85412],[37.57181,126.85356],[37.58577,126.83209],[37.5894,126.82453],[37.59359,126.81858],[37.59529,126.81759],[37.59868,126.81128],[37.60369,126.8055],[37.60462,126.80289],[37.6041,126.8006],[37.59849,126.79702],[37.588,126.80079],[37.58779,126.79834],[37.58418,126.79703],[37.58331,126.79482],[37.5816,126.79367],[37.58555,126.78705],[37.58259,126.78411],[37.58436,126.7801],[37.58512,126.77336],[37.58803,126.76731],[37.58489,126.76308],[37.58479,126.7577],[37.58274,126.75556],[37.58043,126.75474],[37.57957,126.75182],[37.58095,126.74993],[37.58368,126.75003],[37.58712,126.74628],[37.59335,126.74362],[37.5935,126.73798],[37.59047,126.73502],[37.59294,126.72901],[37.592,126.72513],[37.59622,126.7216],[37.59858,126.71714],[37.60479,126.71199],[37.60493,126.70837],[37.60265,126.70451],[37.60555,126.70425],[37.60777,126.70608],[37.61015,126.70628],[37.61154,126.70528],[37.61746,126.69863],[37.62653,126.68168],[37.62964,126.68007],[37.62995,126.67517],[37.63223,126.67408],[37.63436,126.67094],[37.63672,126.66108],[37.63823,126.65944],[37.63807,126.65428],[37.63958,126.65246],[37.6377,126.65131],[37.63517,126.65169],[37.62874,126.64758],[37.62776,126.63948],[37.62603,126.63695],[37.62049,126.63657],[37.61941,126.63434],[37.61692,126.63281],[37.61096,126.62929],[37.60597,126.62769],[37.6028,126.6234],[37.60587,126.61475],[37.60543,126.61246],[37.60415,126.60906],[37.59883,126.60412],[37.59298,126.59272],[37.58608,126.56575],[37.58697,126.56365],[37.58948,126.56306],[37.59417,126.56606],[37.60056,126.5594],[37.6093,126.55417],[37.61803,126.55316],[37.62709,126.54956],[37.63682,126.53793],[37.64181,126.53438],[37.65297,126.52896],[37.65589,126.5297],[37.65914,126.53446],[37.66502,126.53576],[37.66633,126.5353],[37.67318,126.52411],[37.67652,126.52298],[37.68741,126.52545],[37.70314,126.52728]],[[37.60414,126.54902],[37.59986,126.54992],[37.59927,126.5518],[37.59586,126.54996],[37.6024,126.5472],[37.60473,126.54805],[37.60414,126.54902]],[[37.77312,126.52433],[37.77162,126.51763],[37.77316,126.51577],[37.77543,126.51507],[37.78243,126.51535],[37.78646,126.51957],[37.79249,126.51887],[37.79269,126.51978],[37.7898,126.52384],[37.78385,126.52717],[37.78077,126.53215],[37.77895,126.53737],[37.77609,126.54044],[37.77386,126.53783],[37.77312,126.52433]]]};
+</script>
+<script>
+/* ===== 코스 데이터 =====
+   걸어본 길(walked): 기획서에 적힌 예시 값 그대로. 경로선(route)도 예시로 그린 선.
+   걸어볼 길(planned): 위치만 대략 찍어 둔 자리. */
+const SAMPLE_ROUTE = [[37.661,126.7748],[37.66098,126.77507],[37.66097,126.77535],[37.66098,126.77563],[37.66104,126.77589],[37.66114,126.77613],[37.66129,126.77633],[37.66147,126.77649],[37.66166,126.77662],[37.66185,126.77672],[37.662,126.77683],[37.66213,126.77695],[37.66223,126.77711],[37.66232,126.77729],[37.6624,126.77749],[37.66249,126.7777],[37.66259,126.77789],[37.66271,126.77806],[37.66284,126.77822],[37.66298,126.77837],[37.66312,126.77852],[37.66328,126.77868],[37.66344,126.77886],[37.66361,126.77902],[37.6638,126.77915],[37.664,126.77922],[37.66419,126.77921],[37.66438,126.77912],[37.66456,126.77896],[37.66471,126.77876],[37.66485,126.77854],[37.66498,126.77833],[37.66512,126.77816],[37.66525,126.77801],[37.6654,126.77787],[37.66555,126.77774],[37.66569,126.77758],[37.66581,126.77739],[37.6659,126.77717],[37.66596,126.77692],[37.666,126.77667],[37.66603,126.77642],[37.66607,126.77618],[37.66611,126.77595],[37.66616,126.77573],[37.66621,126.77551],[37.66625,126.77528],[37.66627,126.77504],[37.66627,126.7748],[37.66623,126.77457],[37.66619,126.77434],[37.66615,126.77411],[37.66613,126.77388],[37.66613,126.77363],[37.66616,126.77336],[37.6662,126.77306],[37.66623,126.77274],[37.66623,126.77241],[37.66618,126.77211],[37.66609,126.77184],[37.66596,126.77162],[37.66579,126.77146],[37.6656,126.77134],[37.66541,126.77125],[37.66522,126.77117],[37.66504,126.7711],[37.66485,126.77105],[37.66467,126.77102],[37.66449,126.77103],[37.6643,126.77107],[37.66413,126.77116],[37.66396,126.77128],[37.6638,126.77139],[37.66365,126.77147],[37.66351,126.77152],[37.66336,126.77151],[37.66319,126.77147],[37.66302,126.77141],[37.66284,126.77137],[37.66265,126.77137],[37.66248,126.77144],[37.66233,126.77156],[37.66219,126.77172],[37.66207,126.7719],[37.66196,126.77209],[37.66184,126.77227],[37.66172,126.77244],[37.66158,126.77261],[37.66144,126.77279],[37.66131,126.77299],[37.6612,126.77321],[37.66112,126.77346],[37.66107,126.77372],[37.66105,126.77399],[37.66103,126.77426],[37.66102,126.77453],[37.661,126.7748]];
+const COURSES = [
+  {
+    id: 'jeongbalsan', status: 'walked',
+    name: '정발산 둘레 흙길', area: '고양시 일산동구 마두동', short: '마두동',
+    start: { name: '정발산공원 공영주차장', lat: SAMPLE_ROUTE[0][0], lng: SAMPLE_ROUTE[0][1] },
+    km: 2.1, min: 40, shape: '한 바퀴',
+    surface: [['soil', 80], ['mat', 20]],
+    width: '2m 이상. 대형견끼리 마주쳐도 비켜 가기 수월합니다.',
+    shade: null,
+    crowd: '평일 오전은 한적합니다. 주말 오후에는 러너와 유모차가 많습니다.',
+    bike: '자전거 진입 금지 구간입니다.',
+    parking: '공영주차장에서 출발점까지 걸어서 3분, 무료.',
+    amenity: '음수대 있음. 배변봉투함 없음.',
+    oneLine: '평일 오전이 한적합니다.',
+    dogs: '일로, 요이와 걸었습니다',
+    walked: '2026.10.13',
+    sample: '이 코스의 값은 기획서에 적힌 예시이고, 지도 위 경로선도 예시로 그린 선입니다.',
+    route: SAMPLE_ROUTE, label: 'r'
+  },
+  { id: 'ilsan-lake', status: 'planned', name: '일산호수공원', area: '고양시 일산동구 장항동', short: '장항동', at: [37.6545, 126.7665], label: 'l' },
+  { id: 'gobongsan', status: 'planned', name: '고봉산', area: '고양시 일산동구', short: '일산동구', at: [37.6975, 126.7950], label: 'r' },
+  { id: 'simhaksan', status: 'planned', name: '심학산 둘레길', area: '파주시 교하', short: '교하', at: [37.7240, 126.7066], label: 'r' },
+  { id: 'unjeong-lake', status: 'planned', name: '운정호수공원', area: '파주시 운정', short: '운정', at: [37.7120, 126.7680], label: 'r' }
+];
+const SURF = { soil: '흙길', mat: '야자매트', deck: '데크', paved: '포장' };
+const INSTA = 'https://www.instagram.com/sun.dayphoto/';
+
+/* ===== helpers ===== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+const kakaoTo = (name, lat, lng) => `https://map.kakao.com/link/to/${encodeURIComponent(String(name).replace(/,/g, ' '))},${lat},${lng}`;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const narrowMQ = window.matchMedia('(max-width: 899px)');
+const KM = (a, b) => { const R = 6371, r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo = (b[1] - a[1]) * r;
+  const h = Math.sin(dLa / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLo / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
+const pathKm = pts => pts.reduce((s, p, i) => i ? s + KM(pts[i - 1], p) : 0, 0);
+const fmtKm = km => (km >= 10 ? km.toFixed(0) : km.toFixed(1)) + 'km';
+const fmtMeta = c => [c.km != null ? fmtKm(c.km) : null, c.min ? `약 ${c.min}분` : null, c.shape].filter(Boolean).join(' · ');
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+
+function surfaceHTML(list) {
+  if (!list || !list.length) return '';
+  const label = list.map(([k, v]) => `${SURF[k]} ${v}%`).join(', ');
+  return `<div class="surf"><div class="sbar" role="img" aria-label="노면 비율: ${esc(label)}">${list.map(([k, v]) => `<i class="s-${k}" style="flex:${v}"></i>`).join('')}</div>`
+    + `<ul class="slegend">${list.map(([k, v]) => `<li><i class="sw s-${k}" aria-hidden="true"></i>${SURF[k]} ${v}%</li>`).join('')}</ul></div>`;
+}
+
+/* 코스 도면: 경로를 격자 위에 그린 SVG (축척 막대, 방향 표시, 출발점) */
+function planSVG(c) {
+  const W = 640, H = 380, P = 44, R = c.route;
+  const lat0 = R[0][0] * Math.PI / 180, kx = 111320 * Math.cos(lat0), ky = 110540;
+  const pts = R.map(([la, lo]) => [lo * kx, la * ky]);
+  let minx = Infinity, maxx = -Infinity, miny = Infinity, maxy = -Infinity;
+  for (const [x, y] of pts) { minx = Math.min(minx, x); maxx = Math.max(maxx, x); miny = Math.min(miny, y); maxy = Math.max(maxy, y); }
+  const w = Math.max(maxx - minx, 30), h = Math.max(maxy - miny, 30);
+  const s = Math.min((W - 2 * P) / w, (H - 2 * P) / h);
+  const ox = (W - w * s) / 2, oy = (H - h * s) / 2;
+  const X = x => ox + (x - minx) * s, Y = y => H - (oy + (y - miny) * s);
+  const sp = pts.map(([x, y]) => [X(x), Y(y)]);
+  const d = 'M' + sp.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join('L');
+
+  const span = Math.max(w, h);
+  const grid = [50, 100, 200, 250, 500, 1000, 2000, 5000].find(g => span / g <= 6) || 10000;
+  const gp = grid * s;
+  const [sx, sy] = sp[0];
+  let g = '';
+  for (let x = sx % gp; x <= W; x += gp) g += `M${x.toFixed(1)},0V${H}`;
+  for (let y = sy % gp; y <= H; y += gp) g += `M0,${y.toFixed(1)}H${W}`;
+
+  // direction chevrons at 25 / 50 / 75 % of the length
+  const seg = []; let tot = 0;
+  for (let i = 1; i < sp.length; i++) { const l = Math.hypot(sp[i][0] - sp[i - 1][0], sp[i][1] - sp[i - 1][1]); seg.push(l); tot += l; }
+  let chev = '';
+  for (const f of [0.25, 0.5, 0.75]) {
+    let t = f * tot, i = 0;
+    while (i < seg.length - 1 && t > seg[i]) { t -= seg[i]; i++; }
+    const a = sp[i], b = sp[i + 1], k = seg[i] ? t / seg[i] : 0;
+    const px = a[0] + (b[0] - a[0]) * k, py = a[1] + (b[1] - a[1]) * k;
+    const ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
+    chev += `<path class="pl-chev" d="M-4,-4.5L2.5,0L-4,4.5" transform="translate(${px.toFixed(1)},${py.toFixed(1)}) rotate(${ang.toFixed(1)})"/>`;
+  }
+
+  // loop orientation (world coords, y north): + = counter-clockwise
+  let area = 0;
+  for (let i = 0; i < pts.length - 1; i++) area += pts[i][0] * pts[i + 1][1] - pts[i + 1][0] * pts[i][1];
+  const loop = KM(R[0], R[R.length - 1]) < 0.06;
+  const [ex, ey] = sp[sp.length - 1];
+  const sb = `<path class="pl-scale" d="M${P},${H - 18}h${gp.toFixed(1)}M${P},${H - 23}v10M${(P + gp).toFixed(1)},${H - 23}v10"/>`
+    + `<text class="pl-txt" x="${(P + gp + 8).toFixed(1)}" y="${H - 14}">${grid >= 1000 ? grid / 1000 + 'km' : grid + 'm'}</text>`;
+  const north = `<path class="pl-scale" d="M${W - 30},${P + 6}V${P - 22}M${W - 35},${P - 15}L${W - 30},${P - 23}L${W - 25},${P - 15}"/>`
+    + `<text class="pl-txt" x="${W - 30}" y="${P + 22}" text-anchor="middle">N</text>`;
+  const startLabelBelow = sy < H - 40;
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="코스 도면: ${esc(c.name)}">`
+    + `<path class="pl-grid" d="${g}"/>`
+    + `<path class="pl-route" d="${d}"/>${chev}`
+    + (loop ? '' : `<circle class="pl-end" cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="5"/><text class="pl-txt" x="${(ex + 10).toFixed(1)}" y="${(ey + 4).toFixed(1)}">도착</text>`)
+    + `<circle class="pl-start" cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="6"/>`
+    + `<text class="pl-txt" x="${sx.toFixed(1)}" y="${(startLabelBelow ? sy + 24 : sy - 14).toFixed(1)}" text-anchor="middle">출발</text>`
+    + sb + north + `</svg>`;
+  const dir = loop ? `출발점에서 ${area > 0 ? '시계 반대 방향' : '시계 방향'}으로 한 바퀴` : '출발점 ● 에서 도착점 ○ 까지';
+  return { svg, caption: `코스 도면 · ${dir} · 격자 한 칸 ${grid >= 1000 ? grid / 1000 + 'km' : grid + 'm'}` };
+}
+
+function detailHTML(c) {
+  const row = (k, v, html) => `<div><dt>${k}</dt><dd${v == null && !html ? ' class="todo"' : ''}>${html ?? (v == null ? '답사 때 기록' : esc(v))}</dd></div>`;
+  const plan = planSVG(c);
+  const startLL = c.start ? [c.start.lat, c.start.lng] : c.route[0];
+  return `
+  <div class="page-bar">
+    <button class="back" data-act="close">← 지도</button>
+    <span class="page-bar-title">${esc(c.name)}</span>
+  </div>
+  <article class="sheet">
+    ${c.sample ? `<p class="sample-note">시안 · ${esc(c.sample)}</p>` : ''}
+    <header class="sheet-head">
+      <p class="kicker">${c.preview ? '불러온 GPX · 코스 페이지 미리보기' : '걸어본 길'} · ${esc(c.area || '지역 미정')}</p>
+      <h1 tabindex="-1">${esc(c.name)}</h1>
+      <p class="meta">${esc(fmtMeta(c))}</p>
+      <p class="byline">${c.dogs ? esc(c.dogs) : '함께 걸은 개 —'} · ${c.walked ? esc(c.walked) + ' 답사' : '답사일 미정'}</p>
+      ${c.start ? `<p class="start"><span class="lab">출발점</span><span id="start-name">${esc(c.start.name)}</span><button class="copy" data-act="copy">이름 복사</button></p>` : ''}
+    </header>
+
+    <figure class="slot slot-hero"><figcaption>대표 사진 자리 · 3:2</figcaption></figure>
+
+    <section>
+      <h2 class="sec">길 정보</h2>
+      <dl class="spec">
+        ${row('노면', null, c.surface && c.surface.length ? surfaceHTML(c.surface) : null)}
+        ${row('폭', c.width)}
+        ${row('그늘', c.shade)}
+        ${row('붐빔', c.crowd)}
+        ${row('자전거', c.bike)}
+        ${row('주차', c.parking)}
+        ${row('편의', c.amenity)}
+      </dl>
+    </section>
+
+    <figure class="plan">${plan.svg}<figcaption>${esc(plan.caption)}</figcaption></figure>
+
+    <div class="row-actions">
+      <a class="btn" href="${kakaoTo(c.start ? c.start.name : c.name, startLL[0], startLL[1])}" target="_blank" rel="noopener">출발점 길 안내 ↗</a>
+      <button class="btn" data-act="map">지도에서 보기</button>
+    </div>
+
+    <section class="note">
+      <h2 class="sec">걸은 기록</h2>
+      <p class="todo">산책 기록이 들어갈 자리입니다. 개들이 오래 머문 곳, 계절마다 달라지는 점, 다시 걷는다면 고를 시간대를 적습니다.</p>
+    </section>
+
+    <section>
+      <h2 class="sec">이 길에서 찍은 사진</h2>
+      <div class="shots">
+        <figure class="slot"><figcaption>사진 자리 · 4:5</figcaption></figure>
+        <figure class="slot"><figcaption>사진 자리 · 4:5</figcaption></figure>
+        <figure class="slot"><figcaption>사진 자리 · 4:5</figcaption></figure>
+      </div>
+      <p class="shots-cap">이 길에서 찍은 산책 스냅이 쌓이면 여기에 놓입니다.</p>
+    </section>
+
+    <aside class="cta">
+      <p class="cta-k">일,요산책</p>
+      <p class="cta-t">이 길에서 찍어 드립니다.</p>
+      <p class="cta-s">포즈 없이, 평소처럼 걷는 모습을 찍습니다.</p>
+      <a class="btn solid" href="${INSTA}" target="_blank" rel="noopener">예약·문의 ↗</a>
+    </aside>
+
+    <footer class="foot">
+      <p>모든 길은 목줄 2m 안에서 걸었습니다.</p>
+      <p>길이 바뀌었으면 알려 주세요. <a href="${INSTA}" target="_blank" rel="noopener">@sun.dayphoto ↗</a></p>
+    </footer>
+  </article>`;
+}
+
+/* ===== map ===== */
+function start() {
+  const app = $('#app'), card = $('#card'), list = $('#list'), detail = $('#detail');
+  const map = L.map('map', {
+    zoomControl: false, minZoom: 10, maxZoom: 16, zoomSnap: 1,
+    maxBounds: L.latLngBounds(GEO.bounds).pad(0.02), maxBoundsViscosity: 0.85
+  });
+  map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+  map.attributionControl.addAttribution('경계 <a href="https://github.com/vuski/admdongkor" target="_blank" rel="noopener">통계청·admdongkor</a>');
+  L.control.zoom({ position: 'bottomright', zoomInTitle: '확대', zoomOutTitle: '축소' }).addTo(map);
+  [['basePane', 200], ['maskPane', 300], ['routePane', 400], ['labelPane', 450]].forEach(([n, z]) => {
+    const p = map.createPane(n); p.style.zIndex = z; if (n === 'labelPane') p.style.pointerEvents = 'none';
+  });
+
+  // 바탕 지도: OpenStreetMap (js/basemap.js). 휴대폰 화면 색 설정이 바뀌면 다시 그린다.
+  let base = null;
+  const drawBase = () => {
+    if (!window.makeBasemap) return;
+    if (base) map.removeLayer(base);
+    base = window.makeBasemap({ pane: 'basePane' }).addTo(map);
+  };
+  drawBase();
+  if (window.makeBasemap) window.makeBasemap.onThemeChange(drawBase);
+  // 고양·파주·김포 테두리와 바깥 흐리게 (경계 © 통계청 SGIS, vuski/admdongkor)
+  const world = [[36.5, 125.0], [36.5, 128.6], [39.0, 128.6], [39.0, 125.0]];
+  L.polygon([world, ...GEO.area], { pane: 'maskPane', className: 'lf-mask', interactive: false, stroke: false }).addTo(map);
+  L.polygon(GEO.area, { pane: 'maskPane', className: 'lf-area', interactive: false, fill: false }).addTo(map);
+
+  const label = (ll, text, cls, rot) => L.marker(ll, {
+    pane: 'labelPane', interactive: false, keyboard: false,
+    icon: L.divIcon({ className: 'lbl-wrap', iconSize: null, html: `<span class="lbl ${cls}"${rot != null ? ` style="transform:translate(-50%,-50%) rotate(${rot}deg)"` : ''}>${esc(text)}</span>` })
+  }).addTo(map);
+  GEO.city.forEach(c => label(c.l, c.n, 'lbl-city' + (c.o ? ' out' : '')));
+  GEO.gu.forEach(g => label(g.l, g.n, 'lbl-gu'));
+  GEO.riverLabels.forEach(r => label(r.l, r.n, 'lbl-river', r.r));
+
+  const zoomClass = () => {
+    const z = map.getZoom(), el = map.getContainer();
+    el.classList.toggle('zl', z <= 11); el.classList.toggle('zm', z === 12);
+    el.classList.toggle('zh', z === 13); el.classList.toggle('zx', z >= 14);
+  };
+  map.on('zoomend', zoomClass);
+
+  // 코스
+  const layers = {};
+  COURSES.forEach(c => {
+    const at = c.status === 'walked' ? [c.start.lat, c.start.lng] : c.at;
+    const m = L.marker(at, {
+      title: c.name, keyboard: true, riseOnHover: true,
+      icon: L.divIcon({ className: 'pin-wrap', iconSize: [0, 0], html: `<div class="pin ${c.status}"><i class="dot"></i><span class="pl ${c.label}">${esc(c.name)}</span></div>` })
+    }).addTo(map);
+    m.on('click', () => select(c.id, true));
+    const entry = { c, m };
+    if (c.route) {
+      entry.cs = L.polyline(c.route, { pane: 'routePane', className: 'lf-case', interactive: false }).addTo(map);
+      entry.ln = L.polyline(c.route, { pane: 'routePane', className: 'lf-route' }).addTo(map);
+      entry.ln.on('click', () => select(c.id, true));
+    }
+    layers[c.id] = entry;
+  });
+  $('#n-walked').textContent = COURSES.filter(c => c.status === 'walked').length;
+  $('#n-planned').textContent = COURSES.filter(c => c.status === 'planned').length;
+
+  const pad = () => {
+    const top = 80;
+    if (narrowMQ.matches) return { paddingTopLeft: [28, top], paddingBottomRight: [28, (card.hidden ? 150 : card.offsetHeight + 28)] };
+    return { paddingTopLeft: [(list.hidden ? 40 : 400), top], paddingBottomRight: [(card.hidden ? 40 : 400), 40] };
+  };
+
+  let selected = null, gpx = null;
+  function markSelected() {
+    Object.values(layers).forEach(({ c, m, ln }) => {
+      const el = m.getElement(); el && el.querySelector('.pin').classList.toggle('sel', c.id === selected);
+      if (ln && ln.getElement()) ln.getElement().classList.toggle('sel', c.id === selected);
+    });
+  }
+  function select(id, fly) {
+    clearGPX();
+    selected = id; markSelected(); renderCard(layers[id].c);
+    if (fly) focusOn(id);
+  }
+  function deselect() { selected = null; markSelected(); card.hidden = true; }
+  function focusOn(id) {
+    const { c } = layers[id];
+    const b = c.route ? L.latLngBounds(c.route) : L.latLng(c.at).toBounds(2400);
+    map.flyToBounds(b, { ...pad(), maxZoom: c.route ? 15 : 13, animate: !reduceMotion, duration: 0.7 });
+  }
+
+  function renderCard(c) {
+    let html = `<button class="x" data-act="deselect" aria-label="닫기">×</button>`;
+    if (c.status === 'walked') {
+      html += `<p class="kicker">걸어본 길 · ${esc(c.short)}</p>
+        <h2 class="card-title">${esc(c.name)}</h2>
+        <p class="meta">${esc(fmtMeta(c))}</p>
+        ${surfaceHTML(c.surface)}
+        <p class="one">${esc(c.oneLine)}</p>
+        <div class="actions">
+          <a class="btn" href="${kakaoTo(c.start.name, c.start.lat, c.start.lng)}" target="_blank" rel="noopener">길 안내 ↗</a>
+          <button class="btn solid" data-act="detail" data-id="${c.id}">자세히 보기</button>
+        </div>`;
+    } else {
+      html += `<p class="kicker">걸어볼 길 · ${esc(c.short)}</p>
+        <h2 class="card-title">${esc(c.name)}</h2>
+        <p class="one muted">아직 걷지 않았습니다. 걸어 보면 노면, 폭, 붐비는 시간을 채워 둡니다.</p>
+        <div class="actions">
+          <a class="btn" href="${kakaoTo(c.name, c.at[0], c.at[1])}" target="_blank" rel="noopener">길 안내 ↗</a>
+          <a class="btn solid" href="${INSTA}" target="_blank" rel="noopener">먼저 걸어 주세요 ↗</a>
+        </div>`;
+    }
+    card.innerHTML = html; card.hidden = false;
+  }
+
+  // 코스 페이지
+  let lastFocus = null, current = null;
+  function openDetail(c, opener) {
+    current = c; lastFocus = opener || document.activeElement;
+    detail.innerHTML = detailHTML(c); detail.hidden = false; detail.scrollTop = 0;
+    if (!c.preview) { try { history.replaceState(null, '', '#' + c.id); } catch (e) {} }
+    const h = detail.querySelector('h1'); h && h.focus({ preventScroll: true });
+  }
+  function closeDetail() {
+    detail.hidden = true;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+  }
+  detail.addEventListener('click', e => {
+    const a = e.target.closest('[data-act]'); if (!a) return;
+    const act = a.dataset.act;
+    if (act === 'close') closeDetail();
+    if (act === 'map') { closeDetail(); if (current && current.preview) showGPXOnMap(); else if (current) select(current.id, true); }
+    if (act === 'copy') {
+      const text = current && current.start ? current.start.name : '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => toast('출발점 이름을 복사했습니다.'), () => selectText('#start-name'));
+      } else selectText('#start-name');
+    }
+  });
+  function selectText(sel) {
+    const el = $(sel); if (!el) return;
+    const r = document.createRange(); r.selectNodeContents(el);
+    const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+    toast('복사가 막혀 있어 글자를 선택해 두었습니다.');
+  }
+
+  card.addEventListener('click', e => {
+    const a = e.target.closest('[data-act]'); if (!a) return;
+    if (a.dataset.act === 'deselect') { if (gpx) clearGPX(); deselect(); }
+    if (a.dataset.act === 'detail') openDetail(layers[a.dataset.id].c, a);
+    if (a.dataset.act === 'gpx-page') openDetail(gpx.course, a);
+    if (a.dataset.act === 'gpx-clear') { clearGPX(); card.hidden = true; }
+  });
+  map.on('click', () => { if (!gpx) deselect(); });
+
+  // 목록
+  function renderList() {
+    const item = c => `<li><button class="item" data-id="${c.id}"><i class="${c.status === 'walked' ? 'g-walked' : 'g-planned'}" aria-hidden="true"></i>`
+      + `<span class="nm">${esc(c.name)}</span><span class="km">${c.km != null ? fmtKm(c.km) : '—'}</span><span class="ar">${esc(c.area)}</span></button></li>`;
+    const w = COURSES.filter(c => c.status === 'walked'), p = COURSES.filter(c => c.status === 'planned');
+    $('#list-body').innerHTML = `<p class="grp"><span>걸어본 길</span><span>${w.length}</span></p><ul>${w.map(item).join('')}</ul>`
+      + `<p class="grp"><span>걸어볼 길</span><span>${p.length}</span></p><ul>${p.map(item).join('')}</ul>`;
+  }
+  renderList();
+  const btnList = $('#btn-list');
+  const setList = open => { list.hidden = !open; btnList.setAttribute('aria-expanded', String(open)); };
+  btnList.addEventListener('click', () => setList(list.hidden));
+  $('#list-close').addEventListener('click', () => { setList(false); btnList.focus(); });
+  $('#list-body').addEventListener('click', e => {
+    const b = e.target.closest('.item'); if (!b) return;
+    if (narrowMQ.matches) setList(false);
+    select(b.dataset.id, true);
+  });
+
+  // GPX
+  function clearGPX() {
+    if (!gpx) return;
+    gpx.layers.forEach(l => map.removeLayer(l)); gpx = null;
+    map.setMaxBounds(L.latLngBounds(GEO.bounds).pad(0.02));
+  }
+  function showGPXOnMap() {
+    if (!gpx) return;
+    const b = L.latLngBounds(gpx.course.route);
+    map.flyToBounds(b, { ...pad(), maxZoom: 15, animate: !reduceMotion, duration: 0.7 });
+  }
+  function parseGPX(text) {
+    const doc = new DOMParser().parseFromString(text, 'application/xml');
+    if (doc.getElementsByTagName('parsererror').length) throw new Error('GPX 형식을 읽지 못했습니다. 파일이 깨지지 않았는지 확인해 주세요.');
+    let nodes = [...doc.getElementsByTagNameNS('*', 'trkpt')];
+    if (!nodes.length) nodes = [...doc.getElementsByTagNameNS('*', 'rtept')];
+    const pts = nodes.map(n => [parseFloat(n.getAttribute('lat')), parseFloat(n.getAttribute('lon'))]).filter(([a, b]) => isFinite(a) && isFinite(b));
+    if (pts.length < 2) throw new Error('GPX에서 경로 점을 찾지 못했습니다. 트랙이 들어 있는 파일인지 확인해 주세요.');
+    const times = nodes.map(n => { const t = n.getElementsByTagNameNS('*', 'time')[0]; return t ? Date.parse(t.textContent) : NaN; }).filter(isFinite);
+    const minutes = times.length > 1 ? Math.round((times[times.length - 1] - times[0]) / 60000) : null;
+    const nm = doc.getElementsByTagNameNS('*', 'name')[0];
+    return { pts, minutes, name: nm ? nm.textContent.trim() : '' };
+  }
+  function showGPX(res, fileName) {
+    clearGPX(); deselect();
+    const km = pathKm(res.pts);
+    const loop = KM(res.pts[0], res.pts[res.pts.length - 1]) < 0.06;
+    const inside = L.latLngBounds(GEO.bounds).contains(L.latLngBounds(res.pts));
+    const course = {
+      id: 'gpx', status: 'walked', preview: true,
+      name: res.name || fileName.replace(/\.gpx$/i, ''), area: inside ? null : '지도 범위 밖',
+      km: Math.round(km * 10) / 10, min: res.minutes, shape: loop ? '한 바퀴' : '편도',
+      surface: null, width: null, shade: null, crowd: null, bike: null, parking: null, amenity: null,
+      route: res.pts, start: { name: '출발점 이름 미정', lat: res.pts[0][0], lng: res.pts[0][1] }
+    };
+    const ls = [
+      L.polyline(res.pts, { pane: 'routePane', className: 'lf-case gpx', interactive: false }),
+      L.polyline(res.pts, { pane: 'routePane', className: 'lf-route gpx', interactive: false }),
+      L.circleMarker(res.pts[0], { pane: 'routePane', radius: 6, className: 'lf-start-gpx', interactive: false })
+    ];
+    if (!inside) map.setMaxBounds(null);
+    ls.forEach(l => l.addTo(map));
+    gpx = { layers: ls, course };
+    card.innerHTML = `<button class="x" data-act="deselect" aria-label="닫기">×</button>
+      <p class="kicker">불러온 GPX · 미리보기</p>
+      <h2 class="card-title">${esc(course.name)}</h2>
+      <p class="meta">${esc(fmtMeta(course))} · 점 ${res.pts.length.toLocaleString('ko-KR')}개</p>
+      <p class="one muted">이 화면에서만 보이고 저장되지 않습니다.${inside ? '' : ' 지도 범위(고양·파주·김포) 밖의 길이라 바탕 지도가 비어 보입니다.'}</p>
+      <div class="actions">
+        <button class="btn" data-act="gpx-clear">지우기</button>
+        <button class="btn solid" data-act="gpx-page">코스 페이지로 보기</button>
+      </div>`;
+    card.hidden = false;
+    showGPXOnMap();
+  }
+  function readGPX(file) {
+    if (!/\.gpx$/i.test(file.name) && !/gpx/.test(file.type)) { toast('GPX 파일만 불러올 수 있습니다.'); return; }
+    const r = new FileReader();
+    r.onload = () => { try { showGPX(parseGPX(String(r.result)), file.name); } catch (err) { toast(err.message || 'GPX를 읽지 못했습니다.'); } };
+    r.onerror = () => toast('파일을 읽지 못했습니다. 다시 골라 주세요.');
+    r.readAsText(file);
+  }
+  const input = $('#gpx-input');
+  $('#btn-gpx').addEventListener('click', () => input.click());
+  input.addEventListener('change', () => { const f = input.files && input.files[0]; if (f) readGPX(f); input.value = ''; });
+  const drop = $('#drop'); let depth = 0;
+  const hasFiles = e => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
+  app.addEventListener('dragenter', e => { if (!hasFiles(e)) return; e.preventDefault(); depth++; drop.hidden = false; });
+  app.addEventListener('dragover', e => { if (hasFiles(e)) e.preventDefault(); });
+  app.addEventListener('dragleave', e => { if (!hasFiles(e)) return; depth = Math.max(0, depth - 1); if (!depth) drop.hidden = true; });
+  app.addEventListener('drop', e => { if (!hasFiles(e)) return; e.preventDefault(); depth = 0; drop.hidden = true; const f = e.dataTransfer.files[0]; if (f) readGPX(f); });
+
+  // 키보드
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (!detail.hidden) closeDetail();
+    else if (!list.hidden) { setList(false); btnList.focus(); }
+    else if (!card.hidden) { if (gpx) clearGPX(); deselect(); }
+  });
+
+  // 첫 화면: 전체 코스가 보이게 맞추고, 걸어본 길 하나를 열어 둔다
+  const first = COURSES.find(c => c.status === 'walked');
+  if (first) { selected = first.id; renderCard(first); }
+  const all = L.latLngBounds(COURSES.flatMap(c => c.route ? c.route : [c.at]));
+  map.fitBounds(all, { ...pad(), animate: false });
+  zoomClass(); markSelected();
+
+  const fromHash = () => {
+    const id = decodeURIComponent((location.hash || '').slice(1));
+    const hit = COURSES.find(c => c.id === id && c.status === 'walked');
+    if (hit) { select(hit.id, false); openDetail(hit); }
+  };
+  fromHash();
+  window.addEventListener('hashchange', fromHash);
+}
+
+(function boot() {
+  if (window.L) return start();
+  $('#map').innerHTML = '<p class="maperr">지도를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>';
+})();
+</script>
+</body>
+</html>
