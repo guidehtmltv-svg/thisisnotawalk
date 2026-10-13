@@ -11,7 +11,7 @@
 ## 정해진 것
 
 - 주소: thisisnotawalk.com (도메인은 호스팅케이알, 네임서버는 Cloudflare)
-- 사이트: Cloudflare Pages 무료 요금제. 원본은 이 저장소. 모두 웅님 계정.
+- 사이트: Cloudflare Workers(정적 파일) 무료 요금제. 원본은 이 저장소. 모두 웅님 계정.
 - 광고 없음. 협찬은 직접 고른 곳만 받고 '광고'로 표시한다.
 - 글은 일,요사진만 올린다. 제보는 인스타 DM(@sun.dayphoto)으로 받는다.
 - 바탕 지도: OpenStreetMap에서 고양·파주·김포만 잘라 사이트와 함께 올린다. 지도에 '© OpenStreetMap contributors'를 표시한다.
@@ -23,13 +23,16 @@
 
 | 파일 | 내용 |
 | --- | --- |
-| `index.html` | 지도 화면 (시안). 약도는 행정동 경계와 한강으로 그렸다. |
-| `favicon.svg` | 탭 아이콘 |
+| `public/index.html` | 지도 화면 (시안). 약도는 행정동 경계와 한강으로 그렸다. |
+| `public/favicon.svg` | 탭 아이콘 |
+| `wrangler.jsonc` | Cloudflare 배포 설정. `public/` 폴더만 사이트로 올라간다. |
+
+사이트에 보일 파일은 반드시 `public/` 안에 둔다. 그 밖의 파일(README, 설정, 작업용 스크립트)은 사이트에 올라가지 않는다.
 
 ## 배포와 작업 순서
 
-- `main` 브랜치에 올라간 내용이 Cloudflare Pages를 거쳐 thisisnotawalk.com에 자동으로 반영된다.
-- 새 작업은 별도 브랜치에 올려 Cloudflare의 미리보기 주소에서 먼저 확인하고, 웅님이 확인하면 `main`에 합친다.
+- `main` 브랜치에 올라간 내용이 Cloudflare Workers Builds를 거쳐 자동으로 배포된다 (thisisnotawalk.guide-htmltv.workers.dev, 도메인 연결 후 thisisnotawalk.com).
+- 새 작업은 별도 브랜치에 올려 Cloudflare가 만들어 주는 미리보기 주소(preview URL)에서 먼저 확인하고, 웅님이 확인하면 `main`에 합친다.
 
 ## 데이터 출처
 
