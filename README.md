@@ -5,6 +5,7 @@
 
 ## 지금 상태
 
+- **이어서 작업할 때는 `osm-map` 브랜치에서 시작한다.** 새 지도(전국 + 고양·파주·김포, 내 위치 버튼)와 작업 방식 메모가 그 브랜치 README에 있다. 확인용 화면은 thisisnotawalk.com/new/.
 - 시안 버전이 올라가 있다. 코스 값은 기획서의 예시이고, 경로선도 예시로 그린 선이다.
 - 공개 전까지 검색 노출을 막아 둔다 (`index.html`의 `<meta name="robots" content="noindex, nofollow">`). 공개할 때 지운다.
 
