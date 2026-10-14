@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="color-scheme" content="only light">
+<meta name="darkreader-lock">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>일,요사진이 걸어본 길</title>
 <meta name="description" content="일로, 요이와 직접 걸어본 반려견 산책 코스와 동반 스팟 지도">
@@ -28,11 +29,14 @@ button{font:inherit;color:inherit;cursor:pointer}:focus-visible{outline:2px soli
 body.has-sheet .tools{bottom:calc(var(--sheet-h,0px) + 18px)}
 .tool{width:46px;height:46px;border-radius:50%;border:1px solid var(--rule);background:var(--paper);box-shadow:var(--lift);display:grid;place-items:center;font-size:11px;padding:0}
 .tool svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:1.7}.tool.on{border-color:var(--me);box-shadow:0 0 0 2px var(--me)}.tool.busy{opacity:.6}
-.pin{display:block;border:0;padding:0;background:none;transform:translateY(0);position:relative}
-.pin i{display:block;width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid var(--paper);box-shadow:0 2px 6px rgba(0,0,0,.35);position:relative}
-.pin i::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--paper)}
-.pin.course i{background:var(--ink)}.pin.planned i{background:var(--ink-3)}.pin.cafe i{background:#B5651D}.pin.food i{background:#A23B2A}.pin.vet i{background:#2F6B5B}.pin.etc i{background:#6B5B8A}
-.pin.sel i{width:36px;height:36px;box-shadow:0 0 0 3px var(--paper),0 4px 10px rgba(0,0,0,.45)}
+.pin{display:block;border:0;padding:0;background:none;position:relative;width:40px;height:48px;isolation:isolate;--c:var(--ink)}
+.pin .bd{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--paper);border:2px solid var(--c);color:var(--c);box-shadow:0 2px 6px rgba(36,33,29,.3)}
+.pin::after{content:"";position:absolute;left:50%;bottom:3px;width:12px;height:12px;background:var(--paper);border-right:2px solid var(--c);border-bottom:2px solid var(--c);transform:translateX(-50%) rotate(45deg);z-index:-1}
+.pin.course{--c:var(--ink)}.pin.planned{--c:#9A9286}.pin.cafe{--c:#8A4B2D}.pin.food{--c:#A8742F}.pin.vet{--c:#4F6F5E}.pin.etc{--c:#6B7F4E}
+.pin.planned .bd{border-style:dashed}
+.pin.sel{transform:scale(1.18);transform-origin:50% 100%}
+.pin.sel .bd{background:var(--c);color:var(--paper)}.pin.sel::after{background:var(--c)}
+.chip{display:inline-flex;align-items:center;gap:6px}.chip svg{flex:none}
 .me-dot{width:18px;height:18px;border-radius:50%;background:var(--me);border:3px solid #fff;box-shadow:0 0 0 0 rgba(61,110,158,.5);animation:pulse 2s infinite}
 @keyframes pulse{70%{box-shadow:0 0 0 14px rgba(61,110,158,0)}100%{box-shadow:0 0 0 0 rgba(61,110,158,0)}}
 .sheet{position:fixed;z-index:30;left:0;right:0;bottom:0;max-height:75vh;overflow:auto;background:var(--paper);border-top:1px solid var(--rule);border-radius:18px 18px 0 0;box-shadow:var(--lift);padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
@@ -47,7 +51,7 @@ dl{margin:0 0 16px;display:grid;grid-template-columns:5.2em 1fr;gap:8px 10px;fon
 .note{font-size:13px;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:12px;margin:14px 0;white-space:pre-line}
 .btn{border:1px solid var(--ink);background:var(--paper);border-radius:10px;padding:11px 16px;font-size:15px;margin-bottom:8px;display:block;text-align:center;text-decoration:none}
 .btn.solid{background:var(--ink);color:var(--paper);width:100%;font-weight:700}
-.btn.insta{background:#E1306C;border-color:#E1306C;color:#FFF;width:100%;font-weight:700}
+.btn.insta{background:var(--paper);border-color:var(--accent);color:var(--accent);width:100%;font-weight:700}
 .dim{position:fixed;inset:0;z-index:40;background:rgba(20,18,15,.45);display:flex;align-items:flex-end;justify-content:center}
 .pick{width:100%;max-width:440px;background:var(--paper);border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:var(--lift)}
 @media (min-width:600px){.dim{align-items:center}.pick{border-radius:18px}}
@@ -59,7 +63,7 @@ dl{margin:0 0 16px;display:grid;grid-template-columns:5.2em 1fr;gap:8px 10px;fon
 .toast{position:fixed;z-index:50;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:90vw;background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-size:13px;box-shadow:var(--lift)}
 .fail{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:var(--paper)}.fail div{max-width:460px}.fail h2{margin:0 0 8px;font-size:19px}
 /* 카카오 지도 색 입히기 시험: 지도 바탕만 종이색으로 물들인다. 주소 끝에 ?tone=off 를 붙이면 끈다 */
-body:not(.tone-off) #map img{filter:sepia(.42) saturate(.72) contrast(1) brightness(1.02)}
+body:not(.tone-off) #map{filter:sepia(.42) saturate(.72) contrast(1) brightness(1.02)}
 </style>
 </head>
 <body>
@@ -86,6 +90,14 @@ const COURSES=[
 ];
 const SPOTS=[];
 const KINDS={course:'산책 코스',cafe:'카페',food:'식당',vet:'동물병원',etc:'기타'};
+const IC={
+course:'<path d="M6 18c6 0 0-7 6-7s6-5 6-5"/><circle cx="6" cy="18" r="1.4" fill="currentColor"/><circle cx="18" cy="6" r="1.8"/>',
+planned:'<path d="M6 18c6 0 0-7 6-7s6-5 6-5" stroke-dasharray="2 2.6"/><circle cx="18" cy="6" r="1.8" stroke-dasharray="2 2"/>',
+cafe:'<path d="M5.5 9h10v5a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4z"/><path d="M15.5 10.5h1.2a2 2 0 0 1 0 4h-1.2"/><path d="M9 3.5c-.9 1 .9 1.6 0 2.7M12.2 3.5c-.9 1 .9 1.6 0 2.7"/>',
+food:'<path d="M6 4v5a2 2 0 0 0 4 0V4M8 4v16"/><path d="M16.5 20V4c-2 1.4-3.3 4-3.3 7h3.3"/>',
+vet:'<path d="M12 6v12M6 12h12" stroke-width="2.4"/>',
+etc:'<circle cx="6.5" cy="10.5" r="1.7"/><circle cx="10" cy="6.5" r="1.7"/><circle cx="14" cy="6.5" r="1.7"/><circle cx="17.5" cy="10.5" r="1.7"/><path d="M12 12.5c-2.8 0-5 2.5-4.4 4.8.4 1.5 1.8 1.7 4.4 1.7s4-.2 4.4-1.7c.6-2.3-1.6-4.8-4.4-4.8z"/>'};
+const svgIcon=(k,s)=>IC[k]?`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`:'';
 const FILTERS=[['all','전체'],['course','산책 코스'],['cafe','카페'],['food','식당'],['vet','동물병원']];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -134,9 +146,9 @@ function start(){
     const pos=it.at||[it.start.lat,it.start.lng];
     const b=document.createElement('button');
     b.className='pin '+(it.kind==='course'?(it.status==='walked'?'course':'planned'):it.kind);
-    b.setAttribute('aria-label',it.name);b.innerHTML='<i></i>';
+    b.setAttribute('aria-label',it.name);b.innerHTML='<span class="bd">'+svgIcon(it.kind==='course'&&it.status!=='walked'?'planned':it.kind,24)+'</span>';
     b.addEventListener('click',e=>{e.stopPropagation();select(it.id);});
-    const ov=new K.CustomOverlay({position:ll(pos[0],pos[1]),content:b,yAnchor:1.15,zIndex:it.status==='walked'?3:2,clickable:true});
+    const ov=new K.CustomOverlay({position:ll(pos[0],pos[1]),content:b,yAnchor:1,zIndex:it.status==='walked'?3:2,clickable:true});
     pins.set(it.id,{it,ov,el:b,pos});
   });
 
@@ -148,7 +160,7 @@ function start(){
   });
 
   const chips=$('#chips');
-  chips.innerHTML=FILTERS.map(([k,t])=>`<button class="chip" data-k="${k}" aria-pressed="${k===filter}">${t}</button>`).join('');
+  chips.innerHTML=FILTERS.map(([k,t])=>`<button class="chip" data-k="${k}" aria-pressed="${k===filter}">${svgIcon(k,16)}${t}</button>`).join('');
   chips.addEventListener('click',e=>{
     const b=e.target.closest('.chip');if(!b)return;
     filter=b.dataset.k;
@@ -180,22 +192,22 @@ function start(){
       h+=`<p class="kicker">${it.status==='walked'?'걸어본 길':'걸어볼 길'}</p><h2>${esc(it.name)}</h2>`;
       if(it.status==='walked'){
         h+=`<p class="meta">${esc(it.area)}${it.km?` · ${it.km}km · 약 ${it.min}분`:''}</p>`;
-        if(it.photoTip) h+=`<div class="tip-box"><strong>📸 사진 포인트 / 촬영 팁</strong>${esc(it.photoTip)}</div>`;
+        if(it.photoTip) h+=`<div class="tip-box"><strong>사진 포인트 / 촬영 팁</strong>${esc(it.photoTip)}</div>`;
         h+=`<dl>${row('특징/노면',it.condition)}${row('권장 크기',it.size)}${row('걸은 날',it.date)}</dl>
         <button class="btn solid" data-act="nav">길 안내 (출발점)</button>`;
-        if(it.instaUrl) h+=`<a href="${esc(it.instaUrl)}" target="_blank" rel="noopener" class="btn insta">📷 이 곳의 더 많은 사진·영상 보기 (인스타그램)</a>`;
-        else h+=`<a href="${INSTA}" target="_blank" rel="noopener" class="btn insta">📷 일,요사진 인스타그램 보러가기</a>`;
+        if(it.instaUrl) h+=`<a href="${esc(it.instaUrl)}" target="_blank" rel="noopener" class="btn insta">이 곳의 더 많은 사진·영상 보기 (인스타그램)</a>`;
+        else h+=`<a href="${INSTA}" target="_blank" rel="noopener" class="btn insta">일,요사진 인스타그램 보러가기</a>`;
         if(it.note) h+=`<div class="note">${esc(it.note)}</div>`;
       }else{
         h+=`<p class="meta">${esc(it.area)}</p><p class="one">아직 걸어보지 못한 길입니다.</p>`;
       }
     }else{
       h+=`<p class="kicker">반려견 동반 · ${esc(KINDS[it.kind])}</p><h2>${esc(it.name)}</h2><p class="meta">${esc(it.area)}</p>`;
-      if(it.photoTip) h+=`<div class="tip-box"><strong>📸 사진 포인트 / 촬영 팁</strong>${esc(it.photoTip)}</div>`;
+      if(it.photoTip) h+=`<div class="tip-box"><strong>사진 포인트 / 촬영 팁</strong>${esc(it.photoTip)}</div>`;
       h+=`<dl>${row('동반 조건',it.rule)}${row('크기 제한',it.size)}${row('방문일',it.date)}</dl>
       <button class="btn solid" data-act="nav">길 안내</button>`;
-      if(it.instaUrl) h+=`<a href="${esc(it.instaUrl)}" target="_blank" rel="noopener" class="btn insta">📷 이 곳의 더 많은 사진·영상 보기 (인스타그램)</a>`;
-      else h+=`<a href="${INSTA}" target="_blank" rel="noopener" class="btn insta">📷 일,요사진 인스타그램 보러가기</a>`;
+      if(it.instaUrl) h+=`<a href="${esc(it.instaUrl)}" target="_blank" rel="noopener" class="btn insta">이 곳의 더 많은 사진·영상 보기 (인스타그램)</a>`;
+      else h+=`<a href="${INSTA}" target="_blank" rel="noopener" class="btn insta">일,요사진 인스타그램 보러가기</a>`;
       if(it.note) h+=`<div class="note">${esc(it.note)}</div>`;
     }
     sheet.innerHTML=h;sheet.hidden=false;document.body.classList.add('has-sheet');
