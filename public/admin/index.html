@@ -9,17 +9,17 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: "Helvetica Neue", Helvetica, Pretendard, -apple-system, sans-serif; background: #F5EFE7; color: #181818; font-size: 18px; height: 100vh; display: flex; flex-direction: column; overflow: hidden; letter-spacing: -0.015em; }
-  header { background: #181818; color: #F5EFE7; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
-  header h1 { font-size: 20px; font-weight: 700; }
-  .token-btn { font-size: 14px; padding: 6px 12px; background: #333; color: #F5EFE7; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
-  .workspace { display: flex; flex: 1; overflow: hidden; }
-  .map-pane { flex: 1.1; display: flex; flex-direction: column; border-right: 1px solid #D5CEC2; position: relative; }
-  .search-bar { padding: 14px; display: flex; gap: 8px; border-bottom: 1px solid #D5CEC2; background: #F5EFE7; }
-  .search-bar input { flex: 1; font-size: 18px; padding: 10px 14px; border: 1.5px solid #D5CEC2; border-radius: 6px; }
+  header { background: #181818; color: #F5EFE7; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; height: 56px; flex-shrink: 0; }
+  header h1 { font-size: 19px; font-weight: 700; }
+  .token-btn { font-size: 15px; font-weight: 600; padding: 8px 14px; background: #8C6239; color: #FFF; border: none; border-radius: 6px; cursor: pointer; }
+  .workspace { display: flex; height: calc(100vh - 56px); width: 100%; }
+  .map-pane { width: 52%; height: 100%; display: flex; flex-direction: column; border-right: 1px solid #D5CEC2; position: relative; }
+  .search-bar { padding: 12px; display: flex; gap: 8px; border-bottom: 1px solid #D5CEC2; background: #F5EFE7; height: 68px; flex-shrink: 0; }
+  .search-bar input { flex: 1; font-size: 18px; padding: 10px 14px; border: 1.5px solid #D5CEC2; border-radius: 6px; background: #FFF; }
   .search-bar button { font-size: 18px; font-weight: 600; padding: 0 22px; background: #181818; color: #F5EFE7; border: none; border-radius: 6px; cursor: pointer; }
-  #map { flex: 1; width: 100%; }
+  #map { width: 100%; height: calc(100% - 68px); background: #EAE3D7; }
   .map-tip { position: absolute; bottom: 16px; left: 16px; z-index: 10; background: rgba(24,24,24,0.9); color: #F5EFE7; padding: 8px 14px; border-radius: 6px; font-size: 14px; pointer-events: none; }
-  .form-pane { flex: 0.9; padding: 24px 28px; overflow-y: auto; }
+  .form-pane { width: 48%; height: 100%; padding: 24px 28px; overflow-y: auto; }
   .fg { margin-bottom: 20px; }
   .fl { display: block; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
   .sub { font-size: 14px; color: #66635E; font-weight: 400; }
@@ -29,6 +29,7 @@
   .cat-btn.active { background: #181818; color: #F5EFE7; border-color: #181818; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .chip { font-family: inherit; font-size: 15px; padding: 6px 12px; border: 1px solid #D5CEC2; background: #FFF; border-radius: 16px; cursor: pointer; }
+  .chip:active { background: #181818; color: #FFF; }
   .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
   .gpx-box { border: 2px dashed #8C6239; background: #FAF6F0; border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; }
   .gpx-status { margin-top: 6px; font-size: 15px; color: #8C6239; font-weight: 600; }
@@ -53,7 +54,7 @@
       <button type="button" onclick="searchPlace()">검색</button>
     </div>
     <div id="map"></div>
-    <div class="map-tip">💡 지도를 클릭하거나 검색하면 위치가 자동 입력됩니다.</div>
+    <div class="map-tip">💡 지도를 클릭하거나 GPX를 넣으면 좌표가 자동 입력됩니다.</div>
   </div>
   <div class="form-pane">
     <div class="fg">
@@ -67,14 +68,14 @@
     </div>
     <div class="fg">
       <label class="fl">2. 장소 이름</label>
-      <input type="text" id="placeName" placeholder="예: 정발산 둘레 흙길">
+      <input type="text" id="placeName" placeholder="예: 일산역~일산서구반려동물공원">
     </div>
     <div class="fg">
-      <label class="fl">3. 지역 및 좌표 <span class="sub">(지도 클릭 시 자동 입력)</span></label>
+      <label class="fl">3. 지역 및 좌표 <span class="sub">(자동 입력 또는 직접 수정 가능)</span></label>
       <input type="text" id="placeRegion" placeholder="예: 고양시 일산서구">
       <div class="coord-row">
-        <input type="text" id="placeLat" placeholder="위도" readonly>
-        <input type="text" id="placeLng" placeholder="경도" readonly>
+        <input type="text" id="placeLat" placeholder="위도 (예: 37.68)" >
+        <input type="text" id="placeLng" placeholder="경도 (예: 126.76)" >
       </div>
     </div>
     <div class="fg" id="gpxSection">
@@ -123,12 +124,16 @@
 <script>
   const REPO = 'guidehtmltv-svg/thisisnotawalk';
   const FILE_PATH = 'public/data/places.json';
-  let map, marker, polyline, geocoder, places;
+  let map = null, marker = null, polyline = null, geocoder = null, places = null;
   let selType = 'course', selLabel = '산책 코스', gpxPath = [], list = [], fileSha = '';
 
   function setupToken() {
-    const t = prompt('깃허브 토큰(ghp_... 또는 github_pat_...)을 입력해 주세요.\n(한 번만 입력하면 이 컴퓨터에 기억됩니다)', localStorage.getItem('gh_token') || '');
-    if (t !== null) { localStorage.setItem('gh_token', t.trim()); loadExistingPosts(); }
+    const t = prompt('깃허브 암호(토큰)를 붙여넣어 주세요:', localStorage.getItem('gh_token') || '');
+    if (t !== null && t.trim() !== '') {
+      localStorage.setItem('gh_token', t.trim());
+      alert('암호가 저장되었습니다!');
+      loadExistingPosts();
+    }
   }
 
   async function loadExistingPosts() {
@@ -138,17 +143,175 @@
       const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
       const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + FILE_PATH, { headers, cache: 'no-store' });
       if (res.status === 404) { list = []; fileSha = ''; renderList(); return; }
+      if (!res.ok) throw new Error();
       const data = await res.json();
       fileSha = data.sha;
       const jsonStr = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
       list = JSON.parse(jsonStr);
       renderList();
     } catch (e) {
-      box.innerHTML = '<div style="color:#666;font-size:15px;">아직 등록된 글이 없거나 암호 설정 전입니다.</div>';
+      box.innerHTML = '<div style="color:#666;font-size:15px;">아직 등록된 글이 없거나 우측 상단 [깃허브 암호 설정] 전입니다.</div>';
     }
   }
 
   function renderList() {
     document.getElementById('cnt').innerText = list.length;
     const box = document.getElementById('listBox');
-    if (!list.length) { box.innerHTML = '<div style="color:#666;font-size:
+    if (!list.length) { box.innerHTML = '<div style="color:#666;font-size:15px;">등록된 포스트가 없습니다.</div>'; return; }
+    box.innerHTML = list.map((item, idx) => `
+      <div class="post-item">
+        <div class="post-info">
+          <strong>[${item.categoryLabel}] ${item.name}</strong>
+          <span>${item.region} · ${item.condition}</span>
+        </div>
+        <button type="button" class="del-btn" onclick="deletePost(${idx})">삭제</button>
+      </div>
+    `).join('');
+  }
+
+  async function saveToGitHub(newList, msg) {
+    let token = localStorage.getItem('gh_token');
+    if (!token) { setupToken(); token = localStorage.getItem('gh_token'); if (!token) return; }
+    const btn = document.getElementById('postBtn');
+    btn.disabled = true; btn.innerText = '사이트에 올리는 중...';
+    try {
+      const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(newList, null, 2))));
+      const body = { message: msg, content: contentBase64, branch: 'main' };
+      if (fileSha) body.sha = fileSha;
+      const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + FILE_PATH, {
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error('저장 실패! 우측 상단 [깃허브 암호 설정]에서 토큰을 다시 확인해주세요.');
+      const resData = await res.json();
+      fileSha = resData.content.sha;
+      list = newList;
+      renderList();
+      alert('✅ 사이트에 성공적으로 등록되었습니다!');
+      document.getElementById('placeName').value = '';
+      document.getElementById('placeNote').value = '';
+      gpxPath = [];
+      document.getElementById('gpxStatus').innerText = '선택된 파일 없음';
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      btn.disabled = false; btn.innerText = '🚀 포스트 바로 등록';
+    }
+  }
+
+  function submitPost() {
+    const name = document.getElementById('placeName').value.trim();
+    const lat = parseFloat(document.getElementById('placeLat').value);
+    const lng = parseFloat(document.getElementById('placeLng').value);
+    if (!name) return alert('2번 장소 이름을 입력해 주세요.');
+    if (isNaN(lat) || isNaN(lng)) return alert('GPX 파일을 넣거나 지도를 클릭해 위치를 지정해 주세요.');
+    const item = {
+      id: selType + '-' + Date.now(),
+      type: selType, categoryLabel: selLabel, name: name,
+      region: document.getElementById('placeRegion').value.trim() || '고양시 일산서구',
+      lat: lat, lng: lng,
+      condition: document.getElementById('petCond').value.trim() || '동반 가능',
+      size: document.getElementById('sizeLim').value.trim() || '모든 견종',
+      note: document.getElementById('placeNote').value.trim(),
+      photos: document.getElementById('placePhoto').value.trim() ? [document.getElementById('placePhoto').value.trim()] : [],
+      path: selType === 'course' ? gpxPath : []
+    };
+    saveToGitHub([item, ...list], '포스트 등록: ' + name);
+  }
+
+  function deletePost(idx) {
+    if (!confirm('이 포스트를 삭제하시겠습니까?')) return;
+    saveToGitHub(list.filter((_, i) => i !== idx), '포스트 삭제');
+  }
+
+  function setVal(id, v) { document.getElementById(id).value = v; }
+
+  function selectCat(type, label, btn) {
+    selType = type; selLabel = label;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('gpxSection').style.display = (type === 'course') ? 'block' : 'none';
+  }
+
+  function setLoc(lat, lng) {
+    const la = Number(lat.toFixed(6)), ln = Number(lng.toFixed(6));
+    document.getElementById('placeLat').value = la;
+    document.getElementById('placeLng').value = ln;
+    if (!map || !window.kakao) return;
+    const pos = new kakao.maps.LatLng(la, ln);
+    if (!marker) marker = new kakao.maps.Marker({ position: pos, map: map });
+    else marker.setPosition(pos);
+    map.panTo(pos);
+    if (geocoder) {
+      geocoder.coord2RegionCode(ln, la, (res, st) => {
+        if (st === kakao.maps.services.Status.OK) {
+          const h = res.find(r => r.region_type === 'H') || res[0];
+          if (h) document.getElementById('placeRegion').value = (h.region_1depth_name + ' ' + h.region_2depth_name).trim();
+        }
+      });
+    }
+  }
+
+  function handleGpx(file) {
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = (e) => {
+      const xml = new DOMParser().parseFromString(e.target.result, 'text/xml');
+      let pts = Array.from(xml.getElementsByTagName('trkpt'));
+      if (!pts.length) pts = Array.from(xml.getElementsByTagName('rtept'));
+      if (!pts.length) pts = Array.from(xml.getElementsByTagName('wpt'));
+      const coords = pts.map(p => [
+        Number(parseFloat(p.getAttribute('lat')).toFixed(6)),
+        Number(parseFloat(p.getAttribute('lon')).toFixed(6))
+      ]).filter(p => !isNaN(p[0]) && !isNaN(p[1]));
+      if (!coords.length) return alert('GPX 파일 안에서 좌표 데이터를 찾지 못했습니다.');
+      const step = Math.max(1, Math.ceil(coords.length / 250));
+      gpxPath = coords.filter((_, i) => i % step === 0 || i === coords.length - 1);
+      document.getElementById('gpxStatus').innerText = '✅ ' + file.name + ' (' + gpxPath.length + '개 좌표 완료)';
+      setLoc(gpxPath[0][0], gpxPath[0][1]);
+      if (map && window.kakao) {
+        if (polyline) polyline.setMap(null);
+        const kPath = gpxPath.map(p => new kakao.maps.LatLng(p[0], p[1]));
+        polyline = new kakao.maps.Polyline({ map: map, path: kPath, strokeWeight: 5, strokeColor: '#8C6239', strokeOpacity: 0.9 });
+        const b = new kakao.maps.LatLngBounds();
+        kPath.forEach(ll => b.extend(ll));
+        map.setBounds(b);
+      }
+    };
+    r.readAsText(file);
+  }
+
+  function searchPlace() {
+    const kw = document.getElementById('searchInput').value.trim();
+    if (!kw || !places) return alert('지도가 아직 준비되지 않았습니다.');
+    places.keywordSearch(kw, (data, st) => {
+      if (st === kakao.maps.services.Status.OK && data.length > 0) {
+        setLoc(parseFloat(data[0].y), parseFloat(data[0].x));
+        if (!document.getElementById('placeName').value) document.getElementById('placeName').value = data[0].place_name;
+      } else alert('검색 결과가 없습니다.');
+    });
+  }
+
+  const dz = document.getElementById('gpxDropZone');
+  dz.ondragover = (e) => { e.preventDefault(); dz.style.background = '#E5DEC9'; };
+  dz.ondragleave = () => { dz.style.background = '#FAF6F0'; };
+  dz.ondrop = (e) => { e.preventDefault(); dz.style.background = '#FAF6F0'; if (e.dataTransfer.files[0]) handleGpx(e.dataTransfer.files[0]); };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    loadExistingPosts();
+    const s = document.createElement('script');
+    s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=b0e252133176935cb1595de547a315b0&autoload=false&libraries=services';
+    s.onload = () => {
+      kakao.maps.load(() => {
+        map = new kakao.maps.Map(document.getElementById('map'), { center: new kakao.maps.LatLng(37.6658, 126.7680), level: 6 });
+        geocoder = new kakao.maps.services.Geocoder();
+        places = new kakao.maps.services.Places();
+        kakao.maps.event.addListener(map, 'click', (e) => setLoc(e.latLng.getLat(), e.latLng.getLng()));
+      });
+    };
+    document.head.appendChild(s);
+  });
+</script>
+</body>
+</html>
