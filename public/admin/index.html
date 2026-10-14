@@ -30,8 +30,8 @@
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .chip { font-family: inherit; font-size: 15px; padding: 6px 12px; border: 1px solid #D5CEC2; background: #FFF; border-radius: 16px; cursor: pointer; }
   .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-  .gpx-box { border: 2px dashed #8C6239; background: #FAF6F0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; }
-  .gpx-status { margin-top: 6px; font-size: 15px; color: #8C6239; font-weight: 600; }
+  .gpx-box, .img-box { border: 2px dashed #8C6239; background: #FAF6F0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; }
+  .gpx-status, .img-status { margin-top: 6px; font-size: 15px; color: #8C6239; font-weight: 600; }
   .btn-row { display: flex; gap: 8px; margin-top: 10px; }
   .btn-post { flex: 1; font-size: 20px; font-weight: 700; padding: 16px; background: #181818; color: #F5EFE7; border: none; border-radius: 8px; cursor: pointer; }
   .btn-post.editing { background: #8C6239; }
@@ -47,7 +47,7 @@
 </head>
 <body>
 <header>
-  <h1>일,요사진이 걸어본 길 — 포스트 등록·수정</h1>
+  <h1>일,요사진이 걸어본 길 — 포스트 관리</h1>
   <button type="button" class="token-btn" onclick="setupToken()">🔑 깃허브 암호 설정</button>
 </header>
 <div class="workspace">
@@ -71,7 +71,7 @@
     </div>
     <div class="fg">
       <label class="fl">2. 장소 / 코스 이름</label>
-      <input type="text" id="placeName" placeholder="예: 일산역에서 반려동물공원까지">
+      <input type="text" id="placeName" placeholder="예: 정발산 둘레 흙길">
     </div>
     <div class="fg">
       <label class="fl">3. 지역 및 좌표 <span class="sub">(지도 클릭 시 자동 입력)</span></label>
@@ -90,32 +90,41 @@
       </div>
     </div>
     <div class="fg">
-      <label class="fl">5. 특징 / 동반 조건</label>
+      <label class="fl">5. 보정된 대표 사진 <span class="sub">(클릭 또는 끌어놓기)</span></label>
+      <div class="img-box" id="imgDropZone" onclick="document.getElementById('imgInput').click()">
+        <div>🖼️ 보정본 원본 사진을 여기에 올려주세요</div>
+        <div class="img-status" id="imgStatus">선택된 사진 없음</div>
+        <input type="file" id="imgInput" accept="image/*" style="display:none" onchange="handleImage(this.files[0])">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fl">6. ✨ 사진 포인트 / 촬영 팁</label>
+      <input type="text" id="photoTip" placeholder="예: 오후 4시 역광, 낙엽 길 로우앵글 추천">
+    </div>
+    <div class="fg">
+      <label class="fl">7. 🔗 인스타그램 링크 (선택)</label>
+      <input type="text" id="instaUrl" placeholder="예: https://www.instagram.com/p/...">
+    </div>
+    <div class="fg">
+      <label class="fl">8. 특징 / 동반 조건</label>
       <div class="chips">
         <button type="button" class="chip" onclick="setVal('petCond','흙길 위주 · 리드줄')">흙길 위주</button>
-        <button type="button" class="chip" onclick="setVal('petCond','흙길/포장길 · 리드줄')">흙길/포장길</button>
-        <button type="button" class="chip" onclick="setVal('petCond','실내 동반 가능')">실내 동반 가능</button>
-        <button type="button" class="chip" onclick="setVal('petCond','야외 테라스만 가능')">야외 테라스만</button>
+        <button type="button" class="chip" onclick="setVal('petCond','실내 동반 가능')">실내 동반</button>
+        <button type="button" class="chip" onclick="setVal('petCond','야외 테라스만 가능')">테라스만</button>
       </div>
       <input type="text" id="petCond" placeholder="직접 입력하거나 위 버튼 클릭">
     </div>
     <div class="fg">
-      <label class="fl">6. 크기 제한</label>
-      <div class="chips">
-        <button type="button" class="chip" onclick="setVal('sizeLim','모든 견종')">모든 견종</button>
-        <button type="button" class="chip" onclick="setVal('sizeLim','소·중형견')">소·중형견</button>
-        <button type="button" class="chip" onclick="setVal('sizeLim','소형견 (~10kg)')">소형견만</button>
-        <button type="button" class="chip" onclick="setVal('sizeLim','대형견 가능')">대형견 가능</button>
-      </div>
-      <input type="text" id="sizeLim" placeholder="예: 모든 견종">
+      <label class="fl">9. 크기 제한</label>
+      <input type="text" id="sizeLim" placeholder="예: 모든 견종 / 소·중형견">
     </div>
     <div class="fg">
-      <label class="fl">7. 걸은 날 / 방문일</label>
+      <label class="fl">10. 걸은 날 / 방문일</label>
       <input type="text" id="walkDate" placeholder="예: 2026.10.14 · 일로, 요이">
     </div>
     <div class="fg">
-      <label class="fl">8. 메모 (주차 · 특징 · 팁)</label>
-      <textarea id="placeNote" rows="3" placeholder="예: 평일 오전이 한적합니다. 공영주차장 무료."></textarea>
+      <label class="fl">11. 메모 (주차 · 특징 · 팁)</label>
+      <textarea id="placeNote" rows="3" placeholder="예: 평일 오전이 한적합니다."></textarea>
     </div>
     <div class="btn-row">
       <button type="button" id="postBtn" class="btn-post" onclick="submitPost()">🚀 포스트 바로 등록</button>
@@ -130,7 +139,7 @@
 <script>
   const REPO = 'guidehtmltv-svg/thisisnotawalk', FILE_PATH = 'public/data/places.json';
   let map = null, marker = null, polyline = null, geocoder = null, places = null;
-  let selType = 'course', selLabel = '산책 코스', gpxPath = [], list = [], fileSha = '', editIdx = -1;
+  let selType = 'course', selLabel = '산책 코스', gpxPath = [], imageData = null, imageName = '', list = [], fileSha = '', editIdx = -1;
 
   function todayStr() {
     const d = new Date();
@@ -186,12 +195,16 @@
     document.getElementById('placeRegion').value = it.region || '';
     document.getElementById('placeLat').value = it.lat || '';
     document.getElementById('placeLng').value = it.lng || '';
+    document.getElementById('photoTip').value = it.photoTip || '';
+    document.getElementById('instaUrl').value = it.instaUrl || '';
     document.getElementById('petCond').value = it.condition || '';
     document.getElementById('sizeLim').value = it.size || '';
     document.getElementById('walkDate').value = it.date || todayStr();
     document.getElementById('placeNote').value = it.note || '';
     gpxPath = Array.isArray(it.path) ? it.path : [];
-    document.getElementById('gpxStatus').innerText = gpxPath.length ? ('기존 경로 유지 중 (' + gpxPath.length + '개 좌표)') : '선택된 파일 없음';
+    document.getElementById('gpxStatus').innerText = gpxPath.length ? ('기존 경로 (' + gpxPath.length + '개 좌표)') : '선택된 파일 없음';
+    imageData = it.photo || null;
+    document.getElementById('imgStatus').innerText = imageData ? '✅ 기존 사진 유지됨' : '선택된 사진 없음';
     if (it.lat && it.lng) setLoc(it.lat, it.lng, true);
     drawPathOnMap();
     const pBtn = document.getElementById('postBtn');
@@ -203,24 +216,47 @@
   function resetForm() {
     editIdx = -1;
     document.getElementById('placeName').value = '';
+    document.getElementById('photoTip').value = '';
+    document.getElementById('instaUrl').value = '';
     document.getElementById('petCond').value = '';
     document.getElementById('sizeLim').value = '';
     document.getElementById('walkDate').value = todayStr();
     document.getElementById('placeNote').value = '';
-    gpxPath = [];
+    gpxPath = []; imageData = null; imageName = '';
     document.getElementById('gpxStatus').innerText = '선택된 파일 없음';
+    document.getElementById('imgStatus').innerText = '선택된 사진 없음';
     if (polyline) polyline.setMap(null);
     const pBtn = document.getElementById('postBtn');
     pBtn.innerText = '🚀 포스트 바로 등록'; pBtn.classList.remove('editing');
     document.getElementById('cancelBtn').style.display = 'none';
   }
 
+  async function uploadImageToGitHub() {
+    if (!imageData || !imageData.startsWith('data:')) return imageData;
+    const token = localStorage.getItem('gh_token');
+    const path = 'public/images/img_' + Date.now() + '_' + imageName.replace(/[^a-zA-Z0-9_.-]/g, '');
+    const base64Content = imageData.split(',')[1];
+    await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: '이미지 업로드: ' + imageName, content: base64Content, branch: 'main' })
+    });
+    return '/' + path.replace(/^public\//, '');
+  }
+
   async function saveToGitHub(newList, msg) {
     let token = localStorage.getItem('gh_token');
     if (!token) { setupToken(); token = localStorage.getItem('gh_token'); if (!token) return; }
     const btn = document.getElementById('postBtn');
-    btn.disabled = true; btn.innerText = '사이트에 저장 중...';
+    btn.disabled = true; btn.innerText = '고화질 사진 및 데이터 저장 중...';
     try {
+      if (editIdx >= 0 && !imageData && list[editIdx].photo) {
+        newList[editIdx].photo = list[editIdx].photo;
+      } else if (imageData) {
+        const imgPath = await uploadImageToGitHub();
+        if (editIdx >= 0) newList[editIdx].photo = imgPath;
+        else newList[0].photo = imgPath;
+      }
       const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(newList, null, 2))));
       const body = { message: msg, content: contentBase64, branch: 'main' };
       if (fileSha) body.sha = fileSha;
@@ -235,7 +271,7 @@
       list = newList;
       renderList();
       resetForm();
-      alert('✅ 사이트에 성공적으로 반영되었습니다!');
+      alert('✅ 포스트와 포트폴리오 사진이 성공적으로 반영되었습니다!');
     } catch (e) {
       alert(e.message);
       btn.innerText = editIdx >= 0 ? '💾 수정 내용 저장하기' : '🚀 포스트 바로 등록';
@@ -255,6 +291,8 @@
       type: selType, categoryLabel: selLabel, name: name,
       region: document.getElementById('placeRegion').value.trim() || '고양시 일산서구',
       lat: lat, lng: lng,
+      photoTip: document.getElementById('photoTip').value.trim(),
+      instaUrl: document.getElementById('instaUrl').value.trim(),
       condition: document.getElementById('petCond').value.trim() || '동반 가능',
       size: document.getElementById('sizeLim').value.trim() || '모든 견종',
       date: document.getElementById('walkDate').value.trim() || todayStr(),
@@ -331,6 +369,17 @@
     r.readAsText(file);
   }
 
+  function handleImage(file) {
+    if (!file) return;
+    imageName = file.name;
+    const r = new FileReader();
+    r.onload = (e) => {
+      imageData = e.target.result;
+      document.getElementById('imgStatus').innerText = '✅ ' + file.name + ' 준비 완료';
+    };
+    r.readAsDataURL(file);
+  }
+
   function searchPlace() {
     const kw = document.getElementById('searchInput').value.trim();
     if (!kw || !places) return;
@@ -346,6 +395,11 @@
   dz.ondragover = (e) => { e.preventDefault(); dz.style.background = '#E5DEC9'; };
   dz.ondragleave = () => { dz.style.background = '#FAF6F0'; };
   dz.ondrop = (e) => { e.preventDefault(); dz.style.background = '#FAF6F0'; if (e.dataTransfer.files[0]) handleGpx(e.dataTransfer.files[0]); };
+
+  const iz = document.getElementById('imgDropZone');
+  iz.ondragover = (e) => { e.preventDefault(); iz.style.background = '#E5DEC9'; };
+  iz.ondragleave = () => { iz.style.background = '#FAF6F0'; };
+  iz.ondrop = (e) => { e.preventDefault(); iz.style.background = '#FAF6F0'; if (e.dataTransfer.files[0]) handleImage(e.dataTransfer.files[0]); };
 
   window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('walkDate').value = todayStr();
