@@ -39,10 +39,10 @@ body.has-sheet .tools{bottom:calc(var(--sheet-h,0px) + 18px)}
 @media (min-width:900px){.sheet{left:auto;top:0;width:380px;max-height:none;border-radius:0;border-top:0;border-left:1px solid var(--rule);padding-top:24px}body.has-sheet .tools{bottom:18px;right:398px}}
 .sheet .x{position:absolute;top:10px;right:12px;border:0;background:none;font-size:22px;color:var(--ink-3);width:36px;height:36px}
 .kicker{margin:0 0 2px;font-size:12px;color:var(--accent);font-weight:700;letter-spacing:.02em}
-.sheet h2{margin:0 36px 4px 0;font-size:21px;line-height:1.3;letter-spacing:-.01em}.meta{margin:0 0 12px;color:var(--ink-2);font-size:13px}.one{margin:0 0 12px}
-dl{margin:0 0 14px;display:grid;grid-template-columns:4.5em 1fr;gap:6px 10px;font-size:14px}dt{color:var(--ink-3)}dd{margin:0}
+.sheet h2{margin:0 36px 4px 0;font-size:21px;line-height:1.3;letter-spacing:-.01em}.meta{margin:0 0 14px;color:var(--ink-2);font-size:13px}.one{margin:0 0 12px}
+dl{margin:0 0 16px;display:grid;grid-template-columns:5.2em 1fr;gap:8px 10px;font-size:14px}dt{color:var(--ink-3)}dd{margin:0}
 .sbar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:2px 0 6px;background:var(--rule)}.sbar i{display:block}.s-soil{background:#8A6A4A}.s-mat{background:#A89A5B}.s-deck{background:#7B8E8A}.s-paved{background:#9A9286}
-.note{font-size:12px;color:var(--ink-3);border-top:1px solid var(--rule);padding-top:10px;margin:12px 0 0}
+.note{font-size:13px;color:var(--ink-2);border-top:1px solid var(--rule);padding-top:12px;margin:14px 0 0;white-space:pre-line}
 .btn{border:1px solid var(--ink);background:var(--paper);border-radius:10px;padding:11px 16px;font-size:15px}.btn.solid{background:var(--ink);color:var(--paper);width:100%;font-weight:700}
 .dim{position:fixed;inset:0;z-index:40;background:rgba(20,18,15,.45);display:flex;align-items:flex-end;justify-content:center}
 .pick{width:100%;max-width:440px;background:var(--paper);border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:var(--lift)}
@@ -75,7 +75,7 @@ dl{margin:0 0 14px;display:grid;grid-template-columns:4.5em 1fr;gap:6px 10px;fon
 const KAKAO_KEY='b0e252133176935cb1595de547a315b0', APP_NAME='thisisnotawalk.com', INSTA='https://www.instagram.com/sun.dayphoto/';
 const SAMPLE_ROUTE=[[37.661,126.7748],[37.66098,126.77507],[37.66097,126.77535],[37.66098,126.77563],[37.66104,126.77589],[37.66114,126.77613],[37.66129,126.77633],[37.66147,126.77649],[37.66166,126.77662],[37.66185,126.77672],[37.662,126.77683],[37.66213,126.77695],[37.66223,126.77711],[37.66232,126.77729],[37.6624,126.77749],[37.66249,126.7777],[37.66259,126.77789],[37.66271,126.77806],[37.66284,126.77822],[37.66298,126.77837],[37.66312,126.77852],[37.66328,126.77868],[37.66344,126.77886],[37.66361,126.77902],[37.6638,126.77915],[37.664,126.77922],[37.66419,126.77921],[37.66438,126.77912],[37.66456,126.77896],[37.66471,126.77876],[37.66485,126.77854],[37.66498,126.77833],[37.66512,126.77816],[37.66525,126.77801],[37.6654,126.77787],[37.66555,126.77774],[37.66569,126.77758],[37.66581,126.77739],[37.6659,126.77717],[37.66596,126.77692],[37.666,126.77667],[37.66603,126.77642],[37.66607,126.77618],[37.66611,126.77595],[37.66616,126.77573],[37.66621,126.77551],[37.66625,126.77528],[37.66627,126.77504],[37.66627,126.7748],[37.66623,126.77457],[37.66619,126.77434],[37.66615,126.77411],[37.66613,126.77388],[37.66613,126.77363],[37.66616,126.77336],[37.6662,126.77306],[37.66623,126.77274],[37.66623,126.77241],[37.66618,126.77211],[37.66609,126.77184],[37.66596,126.77162],[37.66579,126.77146],[37.6656,126.77134],[37.66541,126.77125],[37.66522,126.77117],[37.66504,126.7711],[37.66485,126.77105],[37.66467,126.77102],[37.66449,126.77103],[37.6643,126.77107],[37.66413,126.77116],[37.66396,126.77128],[37.6638,126.77139],[37.66365,126.77147],[37.66351,126.77152],[37.66336,126.77151],[37.66319,126.77147],[37.66302,126.77141],[37.66284,126.77137],[37.66265,126.77137],[37.66248,126.77144],[37.66233,126.77156],[37.66219,126.77172],[37.66207,126.7719],[37.66196,126.77209],[37.66184,126.77227],[37.66172,126.77244],[37.66158,126.77261],[37.66144,126.77279],[37.66131,126.77299],[37.6612,126.77321],[37.66112,126.77346],[37.66107,126.77372],[37.66105,126.77399],[37.66103,126.77426],[37.66102,126.77453],[37.661,126.7748]];
 const COURSES=[
-  {id:'jeongbalsan',kind:'course',status:'walked',name:'정발산 둘레 흙길',area:'고양시 일산동구 마두동',start:{name:'정발산공원 공영주차장',lat:SAMPLE_ROUTE[0][0],lng:SAMPLE_ROUTE[0][1]},km:2.1,min:40,shape:'한 바퀴',surface:[['soil',80],['mat',20]],width:'2m 이상. 대형견끼리 마주쳐도 비켜 가기 수월합니다.',crowd:'평일 오전은 한적합니다. 주말 오후에는 러너와 유모차가 많습니다.',parking:'공영주차장에서 출발점까지 걸어서 3분, 무료.',amenity:'음수대 있음. 배변봉투함 없음.',dogs:'일로, 요이와 걸었습니다',walked:'2026.10.13',sample:'이 코스의 값은 기획서에 적힌 예시이고, 지도 위 경로선도 예시로 그린 선입니다.',route:SAMPLE_ROUTE},
+  {id:'jeongbalsan',kind:'course',status:'walked',name:'정발산 둘레 흙길',area:'고양시 일산동구 마두동',start:{name:'정발산공원 공영주차장',lat:SAMPLE_ROUTE[0][0],lng:SAMPLE_ROUTE[0][1]},km:2.1,min:40,condition:'흙길 80%, 야자매트 20%',size:'모든 견종 (길 폭 2m 이상)',date:'2026.10.13 · 일로, 요이',note:'평일 오전은 한적합니다. 공영주차장 무료, 음수대 있음.',route:SAMPLE_ROUTE},
   {id:'ilsan-lake',kind:'course',status:'planned',name:'일산호수공원',area:'고양시 일산동구 장항동',at:[37.6545,126.7665]},
   {id:'gobongsan',kind:'course',status:'planned',name:'고봉산',area:'고양시 일산동구',at:[37.6975,126.7950]},
   {id:'simhaksan',kind:'course',status:'planned',name:'심학산 둘레길',area:'파주시 교하',at:[37.7240,126.7066]},
@@ -89,7 +89,6 @@ const SPOTS=[
 ];
 const KINDS={course:'산책 코스',cafe:'카페',food:'식당',vet:'동물병원',etc:'기타'};
 const FILTERS=[['all','전체'],['course','산책 코스'],['cafe','카페'],['food','식당'],['vet','동물병원']];
-const SURF={soil:'흙길',mat:'야자매트',deck:'데크',paved:'포장'};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -117,11 +116,11 @@ function loadKakao(){
 }
 
 fetch('/data/places.json?t='+Date.now()).then(r=>r.ok?r.json():[]).catch(()=>[]).then(list=>{
-  if(Array.isArray(list)) list.forEach(d=>{
+  if(Array.isArray(list)) list.slice().reverse().forEach(d=>{
     const k={course:'course',cafe:'cafe',restaurant:'food',hospital:'vet'}[d.type]||'etc';
     const rt=d.path&&d.path.length>1?d.path:null, km=rt?Number(pathKm(rt).toFixed(1)):0;
-    if(k==='course') COURSES.unshift({id:d.id,kind:'course',status:'walked',name:d.name,area:d.region,start:{name:d.name,lat:d.lat,lng:d.lng},at:[d.lat,d.lng],km,min:Math.round(km*18)||30,shape:d.condition,width:d.size,crowd:d.note,dogs:'일로, 요이',walked:'최근',route:rt});
-    else SPOTS.unshift({id:d.id,kind:k,name:d.name,area:d.region,at:[d.lat,d.lng],rule:d.condition,size:d.size,note:d.note});
+    if(k==='course') COURSES.unshift({id:d.id,kind:'course',status:'walked',name:d.name,area:d.region,start:{name:d.name,lat:rt?rt[0][0]:d.lat,lng:rt?rt[0][1]:d.lng},at:[d.lat,d.lng],km,min:Math.round(km*18)||20,condition:d.condition,size:d.size,date:d.date,note:d.note,route:rt});
+    else SPOTS.unshift({id:d.id,kind:k,name:d.name,area:d.region,at:[d.lat,d.lng],rule:d.condition,size:d.size,date:d.date,note:d.note});
   });
   return loadKakao();
 }).then(start).catch(e=>showFail(e.message||String(e)));
@@ -175,27 +174,24 @@ function start(){
   K.event.addListener(map,'click',()=>deselect());
 
   const sheet=$('#sheet');
-  function surfaceHTML(list){
-    if(!list)return '';
-    const label=list.map(([k,v])=>`${SURF[k]} ${v}%`).join(', ');
-    return `<div class="sbar">${list.map(([k,v])=>`<i class="s-${k}" style="flex:${v}"></i>`).join('')}</div><div>${esc(label)}</div>`;
-  }
-  const row=(t,v)=>v?`<dt>${t}</dt><dd>${v}</dd>`:'';
+  const row=(t,v)=>v?`<dt>${t}</dt><dd>${esc(v)}</dd>`:'';
   function openSheet(it){
     let h=`<button class="x" data-act="close" aria-label="닫기">×</button>`;
     if(it.kind==='course'){
       h+=`<p class="kicker">${it.status==='walked'?'걸어본 길':'걸어볼 길'}</p><h2>${esc(it.name)}</h2>`;
       if(it.status==='walked'){
-        h+=`<p class="meta">${esc(it.area)} · ${it.km}km · 약 ${it.min}분 · ${esc(it.shape)}</p>
-        <dl>${row('노면',surfaceHTML(it.surface))}${row('길 폭/크기',esc(it.width))}${row('참고/메모',esc(it.crowd))}${row('주차',esc(it.parking))}${row('편의',esc(it.amenity))}${row('걸은 날',esc(it.walked)+' · '+esc(it.dogs))}</dl>
-        <button class="btn solid" data-act="nav">길 안내 · 출발점 ${esc(it.start.name)}</button>${it.sample?`<p class="note">${esc(it.sample)}</p>`:''}`;
+        h+=`<p class="meta">${esc(it.area)}${it.km?` · ${it.km}km · 약 ${it.min}분`:''}</p>
+        <dl>${row('특징/노면',it.condition)}${row('권장 크기',it.size)}${row('걸은 날',it.date)}</dl>
+        <button class="btn solid" data-act="nav">길 안내 (출발점)</button>
+        ${it.note?`<p class="note">${esc(it.note)}</p>`:''}`;
       }else{
         h+=`<p class="meta">${esc(it.area)}</p><p class="one">아직 걸어보지 못한 길입니다.</p><p class="note">추천 코스는 <a href="${INSTA}" target="_blank" rel="noopener">인스타 DM</a></p>`;
       }
     }else{
       h+=`<p class="kicker">반려견 동반 · ${esc(KINDS[it.kind])}</p><h2>${esc(it.name)}</h2><p class="meta">${esc(it.area)}</p>
-      <dl>${row('동반 조건',esc(it.rule))}${row('크기',esc(it.size))}</dl>
-      <button class="btn solid" data-act="nav">길 안내</button><p class="note">${esc(it.note)}</p>`;
+      <dl>${row('동반 조건',it.rule)}${row('크기 제한',it.size)}${row('방문일',it.date)}</dl>
+      <button class="btn solid" data-act="nav">길 안내</button>
+      ${it.note?`<p class="note">${esc(it.note)}</p>`:''}`;
     }
     sheet.innerHTML=h;sheet.hidden=false;document.body.classList.add('has-sheet');
     document.documentElement.style.setProperty('--sheet-h',narrow()?Math.min(sheet.offsetHeight,innerHeight*.7)+'px':'0px');
