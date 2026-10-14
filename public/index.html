@@ -12,6 +12,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://dapi.kakao.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;700&display=swap">
 <style>
 [hidden]{display:none!important}
@@ -21,7 +23,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size
 button{font:inherit;color:inherit;cursor:pointer}:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 #map{position:fixed;inset:0;background:var(--paper-2)}
 .bar{position:fixed;z-index:20;top:0;left:0;right:0;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:none;pointer-events:none}
-.bar>*{pointer-events:auto}.brand{display:inline-flex;align-items:baseline;gap:8px;margin:0 0 8px;padding:5px 14px;border-radius:999px;background:color-mix(in srgb,var(--paper) 88%,transparent);box-shadow:var(--lift);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.brand h1{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em}.brand span{font-size:12px;color:var(--ink-3)}
+.bar>*{pointer-events:auto}
 .chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 14px;margin-bottom:-10px}.chips::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1px solid var(--rule);background:var(--paper);border-radius:999px;padding:5px 13px;font-size:13px;color:var(--ink-2);box-shadow:var(--lift)}
 .chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
@@ -64,13 +66,18 @@ dl{margin:0 0 16px;display:grid;grid-template-columns:5.2em 1fr;gap:8px 10px;fon
 .fail{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:var(--paper)}.fail div{max-width:460px}.fail h2{margin:0 0 8px;font-size:19px}
 /* 카카오 지도 색 입히기 시험: 지도 바탕만 종이색으로 물들인다. 주소 끝에 ?tone=off 를 붙이면 끈다 */
 body:not(.tone-off) #map{filter:sepia(.42) saturate(.72) contrast(1) brightness(1.02)}
+/* 버튼: 진한 바탕 + 인터페이스용 고딕 */
+:root{--ui:"Pretendard Variable",Pretendard,"Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif}
+.chip,.tool,.btn,.pick button,.pick h3,.cancel,.sheet .kicker{font-family:var(--ui)}
+.chip{background:#E8DECF;border:1px solid #CDBFA9;color:var(--ink);font-weight:600;font-size:14px;padding:8px 15px;box-shadow:0 2px 8px rgba(36,33,29,.22)}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#F5EFE7}
+.tool{background:#E8DECF;border-color:#CDBFA9;font-weight:600;box-shadow:0 2px 8px rgba(36,33,29,.22)}
 </style>
 </head>
 <body>
 <script>if(/[?&]tone=off/.test(location.search))document.body.classList.add('tone-off')</script>
 <div id="map" aria-label="산책 코스 지도"></div>
 <header class="bar">
-  <div class="brand"><h1>일,요사진이 걸어본 길</h1><span>직접 걸어본 길만</span></div>
   <div class="chips" id="chips" role="group" aria-label="보기 거르기"></div>
 </header>
 <div class="tools">
@@ -84,10 +91,27 @@ body:not(.tone-off) #map{filter:sepia(.42) saturate(.72) contrast(1) brightness(
 <div class="toast" id="toast" hidden role="status"></div>
 <script>
 const KAKAO_KEY='b0e252133176935cb1595de547a315b0', APP_NAME='thisisnotawalk.com', INSTA='https://www.instagram.com/sun.dayphoto/';
-const SAMPLE_ROUTE=[[37.661,126.7748],[37.66098,126.77507],[37.66097,126.77535],[37.66098,126.77563],[37.66104,126.77589],[37.66114,126.77613],[37.66129,126.77633],[37.66147,126.77649],[37.66166,126.77662],[37.66185,126.77672],[37.662,126.77683],[37.66213,126.77695],[37.66223,126.77711],[37.66232,126.77729],[37.6624,126.77749],[37.66249,126.7777],[37.66259,126.77789],[37.66271,126.77806],[37.66284,126.77822],[37.66298,126.77837],[37.66312,126.77852],[37.66328,126.77868],[37.66344,126.77886],[37.66361,126.77902],[37.6638,126.77915],[37.664,126.77922],[37.66419,126.77921],[37.66438,126.77912],[37.66456,126.77896],[37.66471,126.77876],[37.66485,126.77854],[37.66498,126.77833],[37.66512,126.77816],[37.66525,126.77801],[37.6654,126.77787],[37.66555,126.77774],[37.66569,126.77758],[37.66581,126.77739],[37.6659,126.77717],[37.66596,126.77692],[37.666,126.77667],[37.66603,126.77642],[37.66607,126.77618],[37.66611,126.77595],[37.66616,126.77573],[37.66621,126.77551],[37.66625,126.77528],[37.66627,126.77504],[37.66627,126.7748],[37.66623,126.77457],[37.66619,126.77434],[37.66615,126.77411],[37.66613,126.77388],[37.66613,126.77363],[37.66616,126.77336],[37.6662,126.77306],[37.66623,126.77274],[37.66623,126.77241],[37.66618,126.77211],[37.66609,126.77184],[37.66596,126.77162],[37.66579,126.77146],[37.6656,126.77134],[37.66541,126.77125],[37.66522,126.77117],[37.66504,126.7711],[37.66485,126.77105],[37.66467,126.77102],[37.66449,126.77103],[37.6643,126.77107],[37.66413,126.77116],[37.66396,126.77128],[37.6638,126.77139],[37.66365,126.77147],[37.66351,126.77152],[37.66336,126.77151],[37.66319,126.77147],[37.66302,126.77141],[37.66284,126.77137],[37.66265,126.77137],[37.66248,126.77144],[37.66233,126.77156],[37.66219,126.77172],[37.66207,126.7719],[37.66196,126.77209],[37.66184,126.77227],[37.66172,126.77244],[37.66158,126.77261],[37.66144,126.77279],[37.66131,126.77299],[37.6612,126.77321],[37.66112,126.77346],[37.66107,126.77372],[37.66105,126.77399],[37.66103,126.77426],[37.66102,126.77453],[37.661,126.7748]];
-const COURSES=[
-  {id:'jeongbalsan',kind:'course',status:'walked',name:'정발산 둘레 흙길',area:'고양시 일산동구 마두동',start:{name:'정발산공원 공영주차장',lat:SAMPLE_ROUTE[0][0],lng:SAMPLE_ROUTE[0][1]},km:2.1,min:40,condition:'흙길 80%, 야자매트 20%',size:'모든 견종',date:'2026.10.13 · 일로, 요이',note:'평일 오전은 한적합니다.',route:SAMPLE_ROUTE}
-];
+/* GPX 선 다듬기: 흔들림을 이동평균으로 누르고, 모서리를 깎아 곡선으로 잇는다 */
+function smoothPath(p){
+  if(!p||p.length<4) return p;
+  const n=p.length, w=[1,2,3,2,1];
+  let a=p.map((q,i)=>{
+    if(i===0||i===n-1) return q;
+    let la=0,lo=0,s=0;
+    for(let k=-2;k<=2;k++){const j=i+k; if(j<0||j>=n) continue; la+=p[j][0]*w[k+2]; lo+=p[j][1]*w[k+2]; s+=w[k+2];}
+    return [la/s,lo/s];
+  });
+  for(let it=0;it<(n>1500?1:2);it++){
+    const r=[a[0]];
+    for(let i=0;i<a.length-1;i++){
+      const u=a[i],v=a[i+1];
+      r.push([.75*u[0]+.25*v[0],.75*u[1]+.25*v[1]],[.25*u[0]+.75*v[0],.25*u[1]+.75*v[1]]);
+    }
+    r.push(a[a.length-1]); a=r;
+  }
+  return a;
+}
+const COURSES=[];
 const SPOTS=[];
 const KINDS={course:'산책 코스',park:'공원 · 운동장',cafe:'카페',food:'식당',facility:'편의시설',etc:'기타'};
 const IC={
@@ -154,7 +178,7 @@ function start(){
   });
 
   COURSES.filter(c=>c.route).forEach(c=>{
-    const path=c.route.map(p=>ll(p[0],p[1]));
+    const path=smoothPath(c.route).map(p=>ll(p[0],p[1]));
     const under=new K.Polyline({path,strokeWeight:9,strokeColor:'#FFFFFF',strokeOpacity:.9,strokeStyle:'solid'});
     const line=new K.Polyline({path,strokeWeight:5,strokeColor:'#24211D',strokeOpacity:1,strokeStyle:'solid'});
     routeLines.push({id:c.id,lines:[under,line]});
@@ -275,7 +299,7 @@ function start(){
   }
   function showGPX(pts,name){
     if(gpxLine){gpxLine.setMap(null);gpxCase.setMap(null);}
-    const path=pts.map(p=>ll(p[0],p[1]));
+    const path=smoothPath(pts).map(p=>ll(p[0],p[1]));
     gpxCase=new K.Polyline({path,strokeWeight:9,strokeColor:'#FFFFFF',strokeOpacity:.9});
     gpxLine=new K.Polyline({path,strokeWeight:5,strokeColor:'#8A4B2D',strokeOpacity:1});
     gpxCase.setMap(map);gpxLine.setMap(map);
