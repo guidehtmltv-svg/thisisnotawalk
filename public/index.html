@@ -5,16 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>thisisnotawalk — 일,요사진이 걸어본 길</title>
   <meta name="robots" content="noindex, nofollow">
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 카카오 지도 SDK -->
-  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e59ef3694b9f99db393122431008e7ae&libraries=services"></script>
   <style>
-    /* 지도 캔버스 전체 채우기 */
-    #map { width: 100%; height: 100vh; }
+    html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+    #map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans antialiased overflow-hidden">
+<body class="bg-gray-100 text-gray-900 font-sans antialiased">
 
   <!-- 상단 헤더 & 필터 -->
   <header class="absolute top-4 left-4 right-4 z-20 flex flex-col gap-2 max-w-md mx-auto pointer-events-none">
@@ -27,7 +25,7 @@
         우리가 직접 걸어보고 검증한 코스와 반려견 동반 스팟만 남깁니다.
       </p>
       
-      <!-- 탭 필터: 전체 / 산책 코스 / 동반 스팟 -->
+      <!-- 탭 필터 -->
       <div class="grid grid-cols-3 gap-1 bg-gray-100 p-1 rounded-xl text-xs font-semibold">
         <button onclick="filterType('all')" id="btn-all" class="py-1.5 rounded-lg bg-white shadow-sm text-gray-900 transition">전체</button>
         <button onclick="filterType('course')" id="btn-course" class="py-1.5 rounded-lg text-gray-500 hover:text-gray-900 transition">산책 코스 🌲</button>
@@ -39,15 +37,15 @@
   <!-- 내 위치 버튼 -->
   <button onclick="moveToMyLocation()" class="absolute bottom-6 right-4 z-20 bg-white p-3 rounded-full shadow-lg border border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-95 transition">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
     </svg>
   </button>
 
   <!-- 지도 영역 -->
   <div id="map"></div>
 
-  <!-- 장소 상세 & 길찾기 모달 팝업 -->
+  <!-- 상세 & 3사 길찾기 팝업 -->
   <div id="detailModal" class="hidden fixed inset-x-0 bottom-0 z-30 max-w-md mx-auto p-4 transition-transform duration-300">
     <div class="bg-white rounded-3xl shadow-2xl p-5 border border-gray-100">
       <div class="flex justify-between items-start mb-3">
@@ -55,55 +53,34 @@
           <span id="modalCategory" class="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800 mb-1">코스</span>
           <h2 id="modalTitle" class="text-lg font-bold text-gray-900 leading-snug">장소명</h2>
         </div>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 p-1">
-          ✕
-        </button>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 p-1 text-base">✕</button>
       </div>
 
-      <!-- 정보 요약 뱃지 -->
-      <div id="modalBadges" class="flex flex-wrap gap-1.5 text-xs text-gray-600 mb-3">
-        <!-- 동적 뱃지 삽입 영역 -->
-      </div>
+      <div id="modalBadges" class="flex flex-wrap gap-1.5 text-xs text-gray-600 mb-3"></div>
+      <p id="modalDesc" class="text-xs text-gray-600 leading-relaxed mb-4"></p>
 
-      <!-- 후기 및 설명 -->
-      <p id="modalDesc" class="text-xs text-gray-600 leading-relaxed mb-4 line-clamp-3">
-        설명 내용
-      </p>
-
-      <!-- 3사 내비 길찾기 버튼 영역 -->
       <div class="border-t border-gray-100 pt-3">
         <p class="text-[11px] font-bold text-gray-400 mb-2">길찾기 앱 선택</p>
         <div class="grid grid-cols-3 gap-2">
-          <!-- 카카오맵 -->
-          <button id="btnKakaoNavi" class="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-[#FEE500] text-[#191919] font-bold text-xs rounded-xl shadow-sm hover:opacity-90">
-            카카오맵
-          </button>
-          <!-- 네이버 지도 -->
-          <button id="btnNaverNavi" class="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-[#03C75A] text-white font-bold text-xs rounded-xl shadow-sm hover:opacity-90">
-            네이버지도
-          </button>
-          <!-- 티맵 -->
-          <button id="btnTmapNavi" class="flex items-center justify-center gap-1.5 py-2.5 px-3 bg-[#001432] text-white font-bold text-xs rounded-xl shadow-sm hover:opacity-90">
-            티맵
-          </button>
+          <button id="btnKakaoNavi" class="py-2.5 px-3 bg-[#FEE500] text-[#191919] font-bold text-xs rounded-xl shadow-sm hover:opacity-90">카카오맵</button>
+          <button id="btnNaverNavi" class="py-2.5 px-3 bg-[#03C75A] text-white font-bold text-xs rounded-xl shadow-sm hover:opacity-90">네이버지도</button>
+          <button id="btnTmapNavi" class="py-2.5 px-3 bg-[#001432] text-white font-bold text-xs rounded-xl shadow-sm hover:opacity-90">티맵</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // 1. 샘플 데이터 (추후 구글 시트 또는 별도 파일로 분리 가능)
     const items = [
       {
         id: 1,
-        type: 'course', // 산책 코스
+        type: 'course',
         title: '일산 호수공원 메타세쿼이아 흙길',
         category: '산책 코스',
         desc: '발바닥 열기 없이 흙을 밟을 수 있는 구간입니다. 낮에도 그늘이 짙어 걷기 좋습니다.',
         badges: ['흙길 100%', '그늘 많음', '주차 편리'],
         lat: 37.6584,
         lng: 126.7645,
-        // 코스 경로 좌표 (GPX 데이터에서 추출한 좌표 배열)
         path: [
           [37.6584, 126.7645],
           [37.6595, 126.7660],
@@ -113,7 +90,7 @@
       },
       {
         id: 2,
-        type: 'spot', // 스팟
+        type: 'spot',
         title: '파주 운정 브런치 카페 (실내 동반)',
         category: '동반 스팟',
         desc: '실내 좌석도 이동장이나 매너벨트 착용 시 편안하게 앉을 수 있는 친화적인 공간입니다.',
@@ -123,24 +100,37 @@
       }
     ];
 
-    let map;
+    let map = null;
     let markers = [];
     let polylines = [];
 
-    // 2. 지도 초기화
+    // 동적으로 카카오 지도 SDK를 로드하여 'kakao is not defined' 에러 방지
+    function loadKakaoSDK() {
+      const script = document.createElement('script');
+      script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=e59ef3694b9f99db393122431008e7ae&autoload=false&libraries=services';
+      script.onload = () => {
+        window.kakao.maps.load(() => {
+          initMap();
+        });
+      };
+      script.onerror = () => {
+        alert('카카오 지도 스크립트를 불러오지 못했습니다. 도메인 설정을 확인해주세요.');
+      };
+      document.head.appendChild(script);
+    }
+
     function initMap() {
       const container = document.getElementById('map');
       const options = {
-        center: new kakao.maps.LatLng(37.6600, 126.7660), // 일산 호수공원 중심
+        center: new kakao.maps.LatLng(37.6600, 126.7660),
         level: 5
       };
       map = new kakao.maps.Map(container, options);
       renderItems('all');
     }
 
-    // 3. 마커 및 코스 선 그리기
     function renderItems(filter) {
-      // 기존 마커 및 선 제거
+      if (!map) return;
       markers.forEach(m => m.setMap(null));
       polylines.forEach(p => p.setMap(null));
       markers = [];
@@ -150,8 +140,6 @@
         if (filter !== 'all' && item.type !== filter) return;
 
         const pos = new kakao.maps.LatLng(item.lat, item.lng);
-
-        // 마커 생성
         const marker = new kakao.maps.Marker({
           map: map,
           position: pos,
@@ -163,14 +151,13 @@
         });
         markers.push(marker);
 
-        // 코스 타입인 경우 지도에 경로 선(Polyline) 그리기
         if (item.type === 'course' && item.path) {
           const linePath = item.path.map(p => new kakao.maps.LatLng(p[0], p[1]));
           const polyline = new kakao.maps.Polyline({
             map: map,
             path: linePath,
             strokeWeight: 6,
-            strokeColor: '#059669', // 초록색 코스 라인
+            strokeColor: '#059669',
             strokeOpacity: 0.8,
             strokeStyle: 'solid'
           });
@@ -179,32 +166,24 @@
       });
     }
 
-    // 4. 모달 열기 및 3사 길찾기 링크 바인딩
     function showModal(item) {
       document.getElementById('modalTitle').innerText = item.title;
       document.getElementById('modalCategory').innerText = item.category;
       document.getElementById('modalDesc').innerText = item.desc;
 
-      // 뱃지 생성
       const badgeContainer = document.getElementById('modalBadges');
       badgeContainer.innerHTML = item.badges.map(b => 
         `<span class="bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-medium text-[11px]">${b}</span>`
       ).join('');
 
-      // --- 길찾기 URL 연동 (카카오 / 네이버 / 티맵) ---
       const encTitle = encodeURIComponent(item.title);
 
-      // 1) 카카오맵 길찾기 링크
       document.getElementById('btnKakaoNavi').onclick = () => {
         window.open(`https://map.kakao.com/link/to/${encTitle},${item.lat},${item.lng}`);
       };
-
-      // 2) 네이버 지도 길찾기 링크
       document.getElementById('btnNaverNavi').onclick = () => {
         window.open(`https://map.naver.com/v5/directions/-/-/${item.lng},${item.lat},${encTitle}/-/car`);
       };
-
-      // 3) 티맵 길찾기 링크 (모바일 웹/앱 규격)
       document.getElementById('btnTmapNavi').onclick = () => {
         window.open(`https://apis.openapi.sk.com/tmap/app/routes?appKey=none&name=${encTitle}&lon=${item.lng}&lat=${item.lat}`);
       };
@@ -216,7 +195,6 @@
       document.getElementById('detailModal').classList.add('hidden');
     }
 
-    // 5. 타입 필터링 버튼 동작
     function filterType(type) {
       ['all', 'course', 'spot'].forEach(t => {
         const btn = document.getElementById(`btn-${t}`);
@@ -229,9 +207,8 @@
       renderItems(type);
     }
 
-    // 6. 내 위치 찾기
     function moveToMyLocation() {
-      if (navigator.geolocation) {
+      if (navigator.geolocation && map) {
         navigator.geolocation.getCurrentPosition((pos) => {
           const lat = pos.coords.latitude;
           const lng = pos.coords.longitude;
@@ -244,8 +221,8 @@
       }
     }
 
-    // 실행
-    window.onload = initMap;
+    // 문서 로드 완료 시 SDK를 비동기로 주입하여 순서 꼬임 방지
+    window.addEventListener('DOMContentLoaded', loadKakaoSDK);
   </script>
 </body>
 </html>
