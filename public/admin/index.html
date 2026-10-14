@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>포스트 등록 — 일,요사진이 걸어본 길</title>
+<title>포스트 관리 — 일,요사진이 걸어본 길</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <style>
@@ -20,66 +20,69 @@
   #map { width: 100%; height: calc(100% - 68px); background: #EAE3D7; }
   .map-tip { position: absolute; bottom: 16px; left: 16px; z-index: 10; background: rgba(24,24,24,0.9); color: #F5EFE7; padding: 8px 14px; border-radius: 6px; font-size: 14px; pointer-events: none; }
   .form-pane { width: 48%; height: 100%; padding: 24px 28px; overflow-y: auto; }
-  .fg { margin-bottom: 20px; }
+  .fg { margin-bottom: 18px; }
   .fl { display: block; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
   .sub { font-size: 14px; color: #66635E; font-weight: 400; }
-  input[type="text"], textarea { width: 100%; font-family: inherit; font-size: 18px; padding: 12px 14px; border: 1.5px solid #D5CEC2; border-radius: 6px; background: #FFF; }
+  input[type="text"], textarea { width: 100%; font-family: inherit; font-size: 18px; padding: 11px 14px; border: 1.5px solid #D5CEC2; border-radius: 6px; background: #FFF; }
   .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .cat-btn { font-family: inherit; font-size: 17px; font-weight: 600; padding: 12px 6px; border: 1.5px solid #D5CEC2; background: #FFF; border-radius: 6px; cursor: pointer; }
   .cat-btn.active { background: #181818; color: #F5EFE7; border-color: #181818; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .chip { font-family: inherit; font-size: 15px; padding: 6px 12px; border: 1px solid #D5CEC2; background: #FFF; border-radius: 16px; cursor: pointer; }
-  .chip:active { background: #181818; color: #FFF; }
   .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
-  .gpx-box { border: 2px dashed #8C6239; background: #FAF6F0; border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; }
+  .gpx-box { border: 2px dashed #8C6239; background: #FAF6F0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; }
   .gpx-status { margin-top: 6px; font-size: 15px; color: #8C6239; font-weight: 600; }
-  .btn-post { width: 100%; font-size: 20px; font-weight: 700; padding: 16px; background: #181818; color: #F5EFE7; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
-  .btn-post:disabled { background: #888; cursor: wait; }
+  .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+  .btn-post { flex: 1; font-size: 20px; font-weight: 700; padding: 16px; background: #181818; color: #F5EFE7; border: none; border-radius: 8px; cursor: pointer; }
+  .btn-post.editing { background: #8C6239; }
+  .btn-cancel { font-size: 17px; font-weight: 600; padding: 16px 20px; background: #D5CEC2; color: #181818; border: none; border-radius: 8px; cursor: pointer; display: none; }
   .post-list { margin-top: 28px; border-top: 2px solid #D5CEC2; padding-top: 20px; }
-  .post-item { background: #FFF; border: 1px solid #D5CEC2; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .post-item { background: #FFF; border: 1px solid #D5CEC2; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
   .post-info strong { font-size: 17px; display: block; }
   .post-info span { font-size: 14px; color: #66635E; }
+  .item-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .edit-btn { font-size: 14px; padding: 6px 12px; background: #E5DEC9; color: #181818; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
   .del-btn { font-size: 14px; padding: 6px 12px; background: #FEE2E2; color: #991B1B; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
 </style>
 </head>
 <body>
 <header>
-  <h1>일,요사진이 걸어본 길 — 게시판 포스트 등록</h1>
+  <h1>일,요사진이 걸어본 길 — 포스트 등록·수정</h1>
   <button type="button" class="token-btn" onclick="setupToken()">🔑 깃허브 암호 설정</button>
 </header>
 <div class="workspace">
   <div class="map-pane">
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="장소명 또는 주소 검색 (예: 정발산동 카페)" onkeypress="if(event.key==='Enter') searchPlace()">
+      <input type="text" id="searchInput" placeholder="장소명 또는 주소 검색" onkeypress="if(event.key==='Enter') searchPlace()">
       <button type="button" onclick="searchPlace()">검색</button>
     </div>
     <div id="map"></div>
     <div class="map-tip">💡 지도를 클릭하거나 GPX를 넣으면 좌표가 자동 입력됩니다.</div>
   </div>
-  <div class="form-pane">
+  <div class="form-pane" id="formPane">
     <div class="fg">
       <label class="fl">1. 분류 선택</label>
       <div class="cat-grid">
-        <button type="button" class="cat-btn active" onclick="selectCat('course','산책 코스',this)">산책 코스</button>
-        <button type="button" class="cat-btn" onclick="selectCat('cafe','반려견 동반 · 카페',this)">카페</button>
-        <button type="button" class="cat-btn" onclick="selectCat('restaurant','반려견 동반 · 식당',this)">식당</button>
-        <button type="button" class="cat-btn" onclick="selectCat('hospital','동물병원',this)">동물병원</button>
+        <button type="button" class="cat-btn active" data-t="course" onclick="selectCat('course','산책 코스',this)">산책 코스</button>
+        <button type="button" class="cat-btn" data-t="cafe" onclick="selectCat('cafe','반려견 동반 · 카페',this)">카페</button>
+        <button type="button" class="cat-btn" data-t="restaurant" onclick="selectCat('restaurant','반려견 동반 · 식당',this)">식당</button>
+        <button type="button" class="cat-btn" data-t="hospital" onclick="selectCat('hospital','동물병원',this)">동물병원</button>
       </div>
     </div>
     <div class="fg">
-      <label class="fl">2. 장소 이름</label>
-      <input type="text" id="placeName" placeholder="예: 일산역~일산서구반려동물공원">
+      <label class="fl">2. 장소 / 코스 이름</label>
+      <input type="text" id="placeName" placeholder="예: 일산역에서 반려동물공원까지">
     </div>
     <div class="fg">
-      <label class="fl">3. 지역 및 좌표 <span class="sub">(자동 입력 또는 직접 수정 가능)</span></label>
+      <label class="fl">3. 지역 및 좌표 <span class="sub">(지도 클릭 시 자동 입력)</span></label>
       <input type="text" id="placeRegion" placeholder="예: 고양시 일산서구">
       <div class="coord-row">
-        <input type="text" id="placeLat" placeholder="위도 (예: 37.68)" >
-        <input type="text" id="placeLng" placeholder="경도 (예: 126.76)" >
+        <input type="text" id="placeLat" placeholder="위도">
+        <input type="text" id="placeLng" placeholder="경도">
       </div>
     </div>
     <div class="fg" id="gpxSection">
-      <label class="fl">4. GPX 파일 <span class="sub">(클릭 또는 끌어놓기)</span></label>
+      <label class="fl">4. GPX 파일 <span class="sub">(산책 코스용)</span></label>
       <div class="gpx-box" id="gpxDropZone" onclick="document.getElementById('gpxInput').click()">
         <div>📂 클릭하거나 GPX 파일을 이곳에 끌어다 놓으세요</div>
         <div class="gpx-status" id="gpxStatus">선택된 파일 없음</div>
@@ -87,12 +90,12 @@
       </div>
     </div>
     <div class="fg">
-      <label class="fl">5. 동반 조건 / 특징</label>
+      <label class="fl">5. 특징 / 동반 조건</label>
       <div class="chips">
+        <button type="button" class="chip" onclick="setVal('petCond','흙길 위주 · 리드줄')">흙길 위주</button>
+        <button type="button" class="chip" onclick="setVal('petCond','흙길/포장길 · 리드줄')">흙길/포장길</button>
         <button type="button" class="chip" onclick="setVal('petCond','실내 동반 가능')">실내 동반 가능</button>
         <button type="button" class="chip" onclick="setVal('petCond','야외 테라스만 가능')">야외 테라스만</button>
-        <button type="button" class="chip" onclick="setVal('petCond','가방·유모차 필수')">가방·유모차 필수</button>
-        <button type="button" class="chip" onclick="setVal('petCond','흙길 · 리드줄 필수')">흙길 · 리드줄 필수</button>
       </div>
       <input type="text" id="petCond" placeholder="직접 입력하거나 위 버튼 클릭">
     </div>
@@ -107,14 +110,17 @@
       <input type="text" id="sizeLim" placeholder="예: 모든 견종">
     </div>
     <div class="fg">
-      <label class="fl">7. 기록 메모</label>
-      <textarea id="placeNote" rows="2" placeholder="예: 평일 오전이 한적합니다."></textarea>
+      <label class="fl">7. 걸은 날 / 방문일</label>
+      <input type="text" id="walkDate" placeholder="예: 2026.10.14 · 일로, 요이">
     </div>
     <div class="fg">
-      <label class="fl">8. 사진 파일 자리 <span class="sub">(비워두셔도 됩니다)</span></label>
-      <input type="text" id="placePhoto" placeholder="예: /images/sample.jpg">
+      <label class="fl">8. 메모 (주차 · 특징 · 팁)</label>
+      <textarea id="placeNote" rows="3" placeholder="예: 평일 오전이 한적합니다. 공영주차장 무료."></textarea>
     </div>
-    <button type="button" id="postBtn" class="btn-post" onclick="submitPost()">🚀 포스트 바로 등록</button>
+    <div class="btn-row">
+      <button type="button" id="postBtn" class="btn-post" onclick="submitPost()">🚀 포스트 바로 등록</button>
+      <button type="button" id="cancelBtn" class="btn-cancel" onclick="resetForm()">취소</button>
+    </div>
     <div class="post-list">
       <label class="fl">등록된 포스트 목록 (<span id="cnt">0</span>개)</label>
       <div id="listBox">불러오는 중...</div>
@@ -122,18 +128,18 @@
   </div>
 </div>
 <script>
-  const REPO = 'guidehtmltv-svg/thisisnotawalk';
-  const FILE_PATH = 'public/data/places.json';
+  const REPO = 'guidehtmltv-svg/thisisnotawalk', FILE_PATH = 'public/data/places.json';
   let map = null, marker = null, polyline = null, geocoder = null, places = null;
-  let selType = 'course', selLabel = '산책 코스', gpxPath = [], list = [], fileSha = '';
+  let selType = 'course', selLabel = '산책 코스', gpxPath = [], list = [], fileSha = '', editIdx = -1;
+
+  function todayStr() {
+    const d = new Date();
+    return d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+  }
 
   function setupToken() {
-    const t = prompt('깃허브 암호(토큰)를 붙여넣어 주세요:', localStorage.getItem('gh_token') || '');
-    if (t !== null && t.trim() !== '') {
-      localStorage.setItem('gh_token', t.trim());
-      alert('암호가 저장되었습니다!');
-      loadExistingPosts();
-    }
+    const t = prompt('깃허브 암호(토큰)를 입력해 주세요:', localStorage.getItem('gh_token') || '');
+    if (t && t.trim()) { localStorage.setItem('gh_token', t.trim()); alert('저장되었습니다!'); loadExistingPosts(); }
   }
 
   async function loadExistingPosts() {
@@ -146,11 +152,10 @@
       if (!res.ok) throw new Error();
       const data = await res.json();
       fileSha = data.sha;
-      const jsonStr = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
-      list = JSON.parse(jsonStr);
+      list = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
       renderList();
     } catch (e) {
-      box.innerHTML = '<div style="color:#666;font-size:15px;">아직 등록된 글이 없거나 우측 상단 [깃허브 암호 설정] 전입니다.</div>';
+      box.innerHTML = '<div style="color:#666;font-size:15px;">등록된 글이 없거나 암호 설정 전입니다.</div>';
     }
   }
 
@@ -161,19 +166,60 @@
     box.innerHTML = list.map((item, idx) => `
       <div class="post-item">
         <div class="post-info">
-          <strong>[${item.categoryLabel}] ${item.name}</strong>
-          <span>${item.region} · ${item.condition}</span>
+          <strong>[${item.categoryLabel || '기록'}] ${item.name}</strong>
+          <span>${item.region || ''} · ${item.date || '날짜 미기재'}</span>
         </div>
-        <button type="button" class="del-btn" onclick="deletePost(${idx})">삭제</button>
+        <div class="item-btns">
+          <button type="button" class="edit-btn" onclick="editPost(${idx})">수정</button>
+          <button type="button" class="del-btn" onclick="deletePost(${idx})">삭제</button>
+        </div>
       </div>
     `).join('');
+  }
+
+  function editPost(idx) {
+    const it = list[idx]; if (!it) return;
+    editIdx = idx;
+    const btn = document.querySelector(`.cat-btn[data-t="${it.type||'course'}"]`) || document.querySelector('.cat-btn');
+    selectCat(it.type || 'course', it.categoryLabel || '산책 코스', btn);
+    document.getElementById('placeName').value = it.name || '';
+    document.getElementById('placeRegion').value = it.region || '';
+    document.getElementById('placeLat').value = it.lat || '';
+    document.getElementById('placeLng').value = it.lng || '';
+    document.getElementById('petCond').value = it.condition || '';
+    document.getElementById('sizeLim').value = it.size || '';
+    document.getElementById('walkDate').value = it.date || todayStr();
+    document.getElementById('placeNote').value = it.note || '';
+    gpxPath = Array.isArray(it.path) ? it.path : [];
+    document.getElementById('gpxStatus').innerText = gpxPath.length ? ('기존 경로 유지 중 (' + gpxPath.length + '개 좌표)') : '선택된 파일 없음';
+    if (it.lat && it.lng) setLoc(it.lat, it.lng, true);
+    drawPathOnMap();
+    const pBtn = document.getElementById('postBtn');
+    pBtn.innerText = '💾 수정 내용 저장하기'; pBtn.classList.add('editing');
+    document.getElementById('cancelBtn').style.display = 'block';
+    document.getElementById('formPane').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetForm() {
+    editIdx = -1;
+    document.getElementById('placeName').value = '';
+    document.getElementById('petCond').value = '';
+    document.getElementById('sizeLim').value = '';
+    document.getElementById('walkDate').value = todayStr();
+    document.getElementById('placeNote').value = '';
+    gpxPath = [];
+    document.getElementById('gpxStatus').innerText = '선택된 파일 없음';
+    if (polyline) polyline.setMap(null);
+    const pBtn = document.getElementById('postBtn');
+    pBtn.innerText = '🚀 포스트 바로 등록'; pBtn.classList.remove('editing');
+    document.getElementById('cancelBtn').style.display = 'none';
   }
 
   async function saveToGitHub(newList, msg) {
     let token = localStorage.getItem('gh_token');
     if (!token) { setupToken(); token = localStorage.getItem('gh_token'); if (!token) return; }
     const btn = document.getElementById('postBtn');
-    btn.disabled = true; btn.innerText = '사이트에 올리는 중...';
+    btn.disabled = true; btn.innerText = '사이트에 저장 중...';
     try {
       const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(newList, null, 2))));
       const body = { message: msg, content: contentBase64, branch: 'main' };
@@ -183,20 +229,18 @@
         headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-      if (!res.ok) throw new Error('저장 실패! 우측 상단 [깃허브 암호 설정]에서 토큰을 다시 확인해주세요.');
+      if (!res.ok) throw new Error('저장 실패! 암호(토큰)를 확인해 주세요.');
       const resData = await res.json();
       fileSha = resData.content.sha;
       list = newList;
       renderList();
-      alert('✅ 사이트에 성공적으로 등록되었습니다!');
-      document.getElementById('placeName').value = '';
-      document.getElementById('placeNote').value = '';
-      gpxPath = [];
-      document.getElementById('gpxStatus').innerText = '선택된 파일 없음';
+      resetForm();
+      alert('✅ 사이트에 성공적으로 반영되었습니다!');
     } catch (e) {
       alert(e.message);
+      btn.innerText = editIdx >= 0 ? '💾 수정 내용 저장하기' : '🚀 포스트 바로 등록';
     } finally {
-      btn.disabled = false; btn.innerText = '🚀 포스트 바로 등록';
+      btn.disabled = false;
     }
   }
 
@@ -204,24 +248,26 @@
     const name = document.getElementById('placeName').value.trim();
     const lat = parseFloat(document.getElementById('placeLat').value);
     const lng = parseFloat(document.getElementById('placeLng').value);
-    if (!name) return alert('2번 장소 이름을 입력해 주세요.');
-    if (isNaN(lat) || isNaN(lng)) return alert('GPX 파일을 넣거나 지도를 클릭해 위치를 지정해 주세요.');
+    if (!name) return alert('2번 이름을 입력해 주세요.');
+    if (isNaN(lat) || isNaN(lng)) return alert('지도 클릭 또는 GPX로 위치를 지정해 주세요.');
     const item = {
-      id: selType + '-' + Date.now(),
+      id: editIdx >= 0 ? list[editIdx].id : (selType + '-' + Date.now()),
       type: selType, categoryLabel: selLabel, name: name,
       region: document.getElementById('placeRegion').value.trim() || '고양시 일산서구',
       lat: lat, lng: lng,
       condition: document.getElementById('petCond').value.trim() || '동반 가능',
       size: document.getElementById('sizeLim').value.trim() || '모든 견종',
+      date: document.getElementById('walkDate').value.trim() || todayStr(),
       note: document.getElementById('placeNote').value.trim(),
-      photos: document.getElementById('placePhoto').value.trim() ? [document.getElementById('placePhoto').value.trim()] : [],
       path: selType === 'course' ? gpxPath : []
     };
-    saveToGitHub([item, ...list], '포스트 등록: ' + name);
+    const next = [...list];
+    if (editIdx >= 0) next[editIdx] = item; else next.unshift(item);
+    saveToGitHub(next, (editIdx >= 0 ? '포스트 수정: ' : '포스트 등록: ') + name);
   }
 
   function deletePost(idx) {
-    if (!confirm('이 포스트를 삭제하시겠습니까?')) return;
+    if (!confirm('정말 이 포스트를 삭제하시겠습니까?')) return;
     saveToGitHub(list.filter((_, i) => i !== idx), '포스트 삭제');
   }
 
@@ -230,12 +276,12 @@
   function selectCat(type, label, btn) {
     selType = type; selLabel = label;
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
     document.getElementById('gpxSection').style.display = (type === 'course') ? 'block' : 'none';
   }
 
-  function setLoc(lat, lng) {
-    const la = Number(lat.toFixed(6)), ln = Number(lng.toFixed(6));
+  function setLoc(lat, lng, keepRegion) {
+    const la = Number(Number(lat).toFixed(6)), ln = Number(Number(lng).toFixed(6));
     document.getElementById('placeLat').value = la;
     document.getElementById('placeLng').value = ln;
     if (!map || !window.kakao) return;
@@ -243,7 +289,7 @@
     if (!marker) marker = new kakao.maps.Marker({ position: pos, map: map });
     else marker.setPosition(pos);
     map.panTo(pos);
-    if (geocoder) {
+    if (geocoder && !keepRegion) {
       geocoder.coord2RegionCode(ln, la, (res, st) => {
         if (st === kakao.maps.services.Status.OK) {
           const h = res.find(r => r.region_type === 'H') || res[0];
@@ -253,6 +299,17 @@
     }
   }
 
+  function drawPathOnMap() {
+    if (!map || !window.kakao) return;
+    if (polyline) polyline.setMap(null);
+    if (!gpxPath.length) return;
+    const kPath = gpxPath.map(p => new kakao.maps.LatLng(p[0], p[1]));
+    polyline = new kakao.maps.Polyline({ map: map, path: kPath, strokeWeight: 5, strokeColor: '#8C6239', strokeOpacity: 0.9 });
+    const b = new kakao.maps.LatLngBounds();
+    kPath.forEach(ll => b.extend(ll));
+    map.setBounds(b);
+  }
+
   function handleGpx(file) {
     if (!file) return;
     const r = new FileReader();
@@ -260,31 +317,23 @@
       const xml = new DOMParser().parseFromString(e.target.result, 'text/xml');
       let pts = Array.from(xml.getElementsByTagName('trkpt'));
       if (!pts.length) pts = Array.from(xml.getElementsByTagName('rtept'));
-      if (!pts.length) pts = Array.from(xml.getElementsByTagName('wpt'));
       const coords = pts.map(p => [
         Number(parseFloat(p.getAttribute('lat')).toFixed(6)),
         Number(parseFloat(p.getAttribute('lon')).toFixed(6))
       ]).filter(p => !isNaN(p[0]) && !isNaN(p[1]));
-      if (!coords.length) return alert('GPX 파일 안에서 좌표 데이터를 찾지 못했습니다.');
+      if (!coords.length) return alert('GPX 좌표를 찾지 못했습니다.');
       const step = Math.max(1, Math.ceil(coords.length / 250));
       gpxPath = coords.filter((_, i) => i % step === 0 || i === coords.length - 1);
-      document.getElementById('gpxStatus').innerText = '✅ ' + file.name + ' (' + gpxPath.length + '개 좌표 완료)';
+      document.getElementById('gpxStatus').innerText = '✅ ' + file.name + ' (' + gpxPath.length + '개 좌표)';
       setLoc(gpxPath[0][0], gpxPath[0][1]);
-      if (map && window.kakao) {
-        if (polyline) polyline.setMap(null);
-        const kPath = gpxPath.map(p => new kakao.maps.LatLng(p[0], p[1]));
-        polyline = new kakao.maps.Polyline({ map: map, path: kPath, strokeWeight: 5, strokeColor: '#8C6239', strokeOpacity: 0.9 });
-        const b = new kakao.maps.LatLngBounds();
-        kPath.forEach(ll => b.extend(ll));
-        map.setBounds(b);
-      }
+      drawPathOnMap();
     };
     r.readAsText(file);
   }
 
   function searchPlace() {
     const kw = document.getElementById('searchInput').value.trim();
-    if (!kw || !places) return alert('지도가 아직 준비되지 않았습니다.');
+    if (!kw || !places) return;
     places.keywordSearch(kw, (data, st) => {
       if (st === kakao.maps.services.Status.OK && data.length > 0) {
         setLoc(parseFloat(data[0].y), parseFloat(data[0].x));
@@ -299,6 +348,7 @@
   dz.ondrop = (e) => { e.preventDefault(); dz.style.background = '#FAF6F0'; if (e.dataTransfer.files[0]) handleGpx(e.dataTransfer.files[0]); };
 
   window.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('walkDate').value = todayStr();
     loadExistingPosts();
     const s = document.createElement('script');
     s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=b0e252133176935cb1595de547a315b0&autoload=false&libraries=services';
