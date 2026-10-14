@@ -14,7 +14,6 @@
 <style>
 [hidden]{display:none!important}
 :root{--paper:#F5EFE7;--paper-2:#EBE3D7;--ink:#24211D;--ink-2:#625C53;--ink-3:#9A9286;--rule:#D7CDBF;--accent:#8A4B2D;--me:#3D6E9E;--lift:0 1px 0 rgba(36,33,29,.05),0 14px 34px -12px rgba(36,33,29,.30);--serif:"Noto Serif KR","Noto Serif CJK KR","Nanum Myeongjo","AppleMyungjo","Batang",ui-serif,serif}
-@media (prefers-color-scheme:dark){:root{--paper:#1D1C1A;--paper-2:#252321;--ink:#EEE7DC;--ink-2:#ADA59A;--ink-3:#757065;--rule:#3B3631;--accent:#D49A78;--me:#7FA7D0;--lift:0 1px 0 rgba(0,0,0,.35),0 16px 36px -12px rgba(0,0,0,.75)}}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
 body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:15px;line-height:1.6;overflow:hidden;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;cursor:pointer}:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -58,9 +57,12 @@ dl{margin:0 0 16px;display:grid;grid-template-columns:5.2em 1fr;gap:8px 10px;fon
 .cancel{width:100%;border:0;background:none;padding:10px;color:var(--ink-2)}
 .toast{position:fixed;z-index:50;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);max-width:90vw;background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-size:13px;box-shadow:var(--lift)}
 .fail{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:var(--paper)}.fail div{max-width:460px}.fail h2{margin:0 0 8px;font-size:19px}
+/* 카카오 지도 색 입히기 시험: 주소 끝에 ?tone=paper 를 붙이면 지도 바탕만 종이색으로 물든다 */
+body.tone-paper #map img{filter:sepia(.32) saturate(.7) contrast(.95) brightness(1.03)}
 </style>
 </head>
 <body>
+<script>if(/[?&]tone=paper/.test(location.search))document.body.classList.add('tone-paper')</script>
 <div id="map" aria-label="산책 코스 지도"></div>
 <header class="bar">
   <div class="brand"><h1>일,요사진이 걸어본 길</h1><span>직접 걸어본 길만</span></div>
