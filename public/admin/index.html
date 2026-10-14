@@ -76,3 +76,652 @@
       position: relative;
       border-right: 1px solid var(--border-color);
       display: flex;
+      flex-direction: column;
+    }
+
+    .search-bar {
+      padding: 16px;
+      background-color: var(--bg-paper);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .search-bar input {
+      flex: 1;
+      font-family: var(--font-helvetica);
+      font-size: 18px;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+      background: var(--bg-card);
+      color: var(--text-ink);
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .search-bar button {
+      font-family: var(--font-helvetica);
+      font-size: 18px;
+      font-weight: 600;
+      padding: 0 26px;
+      background-color: var(--accent);
+      color: var(--bg-paper);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .search-bar button:hover {
+      opacity: 0.88;
+    }
+
+    #map {
+      flex: 1;
+      width: 100%;
+    }
+
+    .map-tip {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 10;
+      background: rgba(24, 24, 24, 0.9);
+      color: var(--bg-paper);
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* 오른쪽: 입력 폼 영역 */
+    .form-pane {
+      flex: 0.9;
+      padding: 28px 32px;
+      overflow-y: auto;
+      background-color: var(--bg-paper);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text-ink);
+      letter-spacing: -0.02em;
+    }
+
+    .form-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      font-weight: 400;
+      margin-left: 6px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      font-family: var(--font-helvetica);
+      font-size: 18px;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 6px;
+      background-color: var(--bg-card);
+      color: var(--text-ink);
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* 종류 선택 버튼 그리드 */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .cat-btn {
+      font-family: var(--font-helvetica);
+      font-size: 17px;
+      font-weight: 600;
+      padding: 14px 8px;
+      border: 1.5px solid var(--border-color);
+      background-color: var(--bg-card);
+      color: var(--text-ink);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cat-btn.active {
+      background-color: var(--accent);
+      color: var(--bg-paper);
+      border-color: var(--accent);
+    }
+
+    /* 빠른 선택 칩 */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .chip {
+      font-family: var(--font-helvetica);
+      font-size: 16px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-card);
+      color: var(--text-ink);
+      border-radius: 18px;
+      cursor: pointer;
+    }
+
+    .chip:hover {
+      border-color: var(--accent);
+      background-color: #EAE3D7;
+    }
+
+    /* 좌표 표시줄 */
+    .coord-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    /* GPX 드롭존 */
+    .gpx-box {
+      border: 2px dashed var(--highlight);
+      background-color: #FAF6F0;
+      border-radius: 8px;
+      padding: 22px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .gpx-box:hover {
+      background-color: #EFE8DC;
+    }
+
+    .gpx-status {
+      margin-top: 8px;
+      font-size: 16px;
+      color: var(--highlight);
+      font-weight: 600;
+    }
+
+    /* 하단 실행 버튼 */
+    .action-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1.5px solid var(--border-color);
+    }
+
+    .btn-primary {
+      flex: 1;
+      font-family: var(--font-helvetica);
+      font-size: 19px;
+      font-weight: 700;
+      padding: 16px;
+      background-color: var(--accent);
+      color: var(--bg-paper);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      font-family: var(--font-helvetica);
+      font-size: 18px;
+      font-weight: 600;
+      padding: 16px 24px;
+      background-color: var(--highlight);
+      color: #FFF;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* 결과 출력 박스 */
+    .output-section {
+      margin-top: 28px;
+      background-color: var(--bg-card);
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .output-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .copy-btn {
+      font-family: var(--font-helvetica);
+      font-size: 16px;
+      font-weight: 600;
+      padding: 8px 16px;
+      background-color: var(--accent);
+      color: var(--bg-paper);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    pre {
+      font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+      background-color: #181818;
+      color: #F5EFE7;
+      padding: 16px;
+      border-radius: 6px;
+      font-size: 15px;
+      line-height: 1.45;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 280px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>일,요사진이 걸어본 길 — 코스·스팟 등록 도구 (PC 전용)</h1>
+    <span>지도 독립형 데이터(JSON) 생성기 · 내 위치 및 GPX 외부 전송 없음</span>
+  </header>
+
+  <div class="workspace">
+    <!-- 왼쪽: 지도 및 장소 검색 -->
+    <div class="map-pane">
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="장소명 또는 주소 입력 (예: 정발산동 카페, 일산호수공원)" onkeypress="if(event.key==='Enter') searchPlace()">
+        <button type="button" onclick="searchPlace()">검색</button>
+      </div>
+      <div id="map"></div>
+      <div class="map-tip">💡 지도를 마우스로 직접 클릭해도 위치와 지역명이 자동 입력됩니다.</div>
+    </div>
+
+    <!-- 오른쪽: 입력 폼 -->
+    <div class="form-pane">
+      <!-- 1. 종류 선택 -->
+      <div class="form-group">
+        <label class="form-label">1. 분류 선택</label>
+        <div class="category-grid">
+          <button type="button" class="cat-btn active" onclick="selectCategory('course', '산책 코스', this)">산책 코스</button>
+          <button type="button" class="cat-btn" onclick="selectCategory('cafe', '반려견 동반 · 카페', this)">카페</button>
+          <button type="button" class="cat-btn" onclick="selectCategory('restaurant', '반려견 동반 · 식당', this)">식당</button>
+          <button type="button" class="cat-btn" onclick="selectCategory('hospital', '동물병원', this)">동물병원</button>
+        </div>
+      </div>
+
+      <!-- 2. 장소명 -->
+      <div class="form-group">
+        <label class="form-label">2. 장소 이름</label>
+        <input type="text" id="placeName" placeholder="예: 정발산 둘레 흙길 / 예시 · 동반 식당">
+      </div>
+
+      <!-- 3. 위치 및 지역 -->
+      <div class="form-group">
+        <label class="form-label">3. 지역 및 좌표 <span class="form-sub">(지도 클릭 시 자동 입력)</span></label>
+        <input type="text" id="placeRegion" placeholder="예: 고양시 일산서구">
+        <div class="coord-row">
+          <input type="text" id="placeLat" placeholder="위도 (lat)" readonly>
+          <input type="text" id="placeLng" placeholder="경도 (lng)" readonly>
+        </div>
+      </div>
+
+      <!-- 4. GPX 파일 (코스일 때만 표시) -->
+      <div class="form-group" id="gpxSection">
+        <label class="form-label">4. 산책 코스 GPX 파일 <span class="form-sub">(클릭하거나 파일을 끌어다 놓으세요)</span></label>
+        <div class="gpx-box" id="gpxDropZone" onclick="document.getElementById('gpxFileInput').click()">
+          <div>📂 여기를 클릭하거나 GPX 파일을 마우스로 끌어다 놓으세요</div>
+          <div class="gpx-status" id="gpxStatus">선택된 파일 없음 (스팟 등록 시 비워두세요)</div>
+          <input type="file" id="gpxFileInput" accept=".gpx" style="display:none" onchange="handleGpxFile(this.files[0])">
+        </div>
+      </div>
+
+      <!-- 5. 동반 조건 -->
+      <div class="form-group">
+        <label class="form-label">5. 동반 조건 / 코스 특징 <span class="form-sub">(버튼을 누르면 바로 채워집니다)</span></label>
+        <div class="chip-group">
+          <button type="button" class="chip" onclick="setFieldValue('petCondition', '실내 동반 가능')">실내 동반 가능</button>
+          <button type="button" class="chip" onclick="setFieldValue('petCondition', '야외 테라스만 가능')">야외 테라스만</button>
+          <button type="button" class="chip" onclick="setFieldValue('petCondition', '이동가방·유모차 필수')">가방·유모차 필수</button>
+          <button type="button" class="chip" onclick="setFieldValue('petCondition', '흙길 위주 · 리드줄 필수')">흙길 · 리드줄 필수</button>
+        </div>
+        <input type="text" id="petCondition" placeholder="직접 입력하거나 위 버튼을 누르세요 (예: 실내 동반 가능)">
+      </div>
+
+      <!-- 6. 크기 제한 -->
+      <div class="form-group">
+        <label class="form-label">6. 크기 제한</label>
+        <div class="chip-group">
+          <button type="button" class="chip" onclick="setFieldValue('sizeLimit', '모든 견종')">모든 견종</button>
+          <button type="button" class="chip" onclick="setFieldValue('sizeLimit', '소형견 · 중형견')">소·중형견</button>
+          <button type="button" class="chip" onclick="setFieldValue('sizeLimit', '소형견 (~10kg)')">소형견만</button>
+          <button type="button" class="chip" onclick="setFieldValue('sizeLimit', '대형견 가능')">대형견 가능</button>
+        </div>
+        <input type="text" id="sizeLimit" placeholder="직접 입력하거나 위 버튼을 누르세요 (예: 모든 견종)">
+      </div>
+
+      <!-- 7. 한줄 메모 -->
+      <div class="form-group">
+        <label class="form-label">7. 기록 메모 (설명)</label>
+        <textarea id="placeNote" rows="3" placeholder="예: 평일 오전이 한적합니다. 주차 공간이 넓고 그늘이 많습니다."></textarea>
+      </div>
+
+      <!-- 8. 사진 파일 자리 -->
+      <div class="form-group">
+        <label class="form-label">8. 사진 파일 자리 <span class="form-sub">(나중에 직접 배치하실 파일명만 메모하거나 비워두세요)</span></label>
+        <input type="text" id="placePhoto" placeholder="예: /images/ilsan-lake-01.jpg (비워두셔도 됩니다)">
+      </div>
+
+      <!-- 실행 버튼 -->
+      <div class="action-row">
+        <button type="button" class="btn-primary" onclick="generateJsonData()">데이터 생성하기 (목록에 추가)</button>
+        <button type="button" class="btn-secondary" onclick="downloadJsonFile()">JSON 파일 저장</button>
+      </div>
+
+      <!-- 생성된 JSON 확인 영역 -->
+      <div class="output-section">
+        <div class="output-header">
+          <h3>생성된 데이터 (<span id="itemCount">0</span>개 누적됨)</h3>
+          <button type="button" class="copy-btn" onclick="copyJsonText()">코드 복사하기</button>
+        </div>
+        <pre id="jsonOutput">아직 생성된 데이터가 없습니다. 위 항목을 채우고 [데이터 생성하기]를 눌러주세요.</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- 카카오 지도 SDK (등록된 공개 키 사용) -->
+  <script>
+    let map = null;
+    let currentMarker = null;
+    let currentPolyline = null;
+    let geocoder = null;
+    let placesService = null;
+
+    let selectedType = 'course';
+    let selectedCategoryLabel = '산책 코스';
+    let parsedGpxPath = [];
+    let savedPlacesList = [];
+
+    // 1. 카카오 SDK 동적 로드
+    function initKakaoMap() {
+      const script = document.createElement('script');
+      script.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=b0e252133176935cb1595de547a315b0&autoload=false&libraries=services';
+      script.onload = function() {
+        kakao.maps.load(function() {
+          const container = document.getElementById('map');
+          const options = {
+            center: new kakao.maps.LatLng(37.6658, 126.7680), // 고양시 일산 기본 중심
+            level: 6
+          };
+          map = new kakao.maps.Map(container, options);
+          geocoder = new kakao.maps.services.Geocoder();
+          placesService = new kakao.maps.services.Places();
+
+          // 지도 클릭 시 핀 이동 및 주소 자동 추출
+          kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+            const latlng = mouseEvent.latLng;
+            setLocationOnMap(latlng.getLat(), latlng.getLng());
+          });
+        });
+      };
+      script.onerror = function() {
+        alert('지도를 불러오지 못했습니다. 도메인 설정을 확인해 주세요.');
+      };
+      document.head.appendChild(script);
+    }
+
+    // 2. 지도 핀 설정 및 행정구역 주소 자동 변환
+    function setLocationOnMap(lat, lng) {
+      const latFixed = Number(lat.toFixed(6));
+      const lngFixed = Number(lng.toFixed(6));
+
+      document.getElementById('placeLat').value = latFixed;
+      document.getElementById('placeLng').value = lngFixed;
+
+      const pos = new kakao.maps.LatLng(latFixed, lngFixed);
+      if (!currentMarker) {
+        currentMarker = new kakao.maps.Marker({ position: pos, map: map });
+      } else {
+        currentMarker.setPosition(pos);
+      }
+      map.panTo(pos);
+
+      if (geocoder) {
+        geocoder.coord2RegionCode(lngFixed, latFixed, function(result, status) {
+          if (status === kakao.maps.services.Status.OK) {
+            for (let i = 0; i < result.length; i++) {
+              if (result[i].region_type === 'H') {
+                const regionText = result[i].region_1depth_name + ' ' + result[i].region_2depth_name;
+                document.getElementById('placeRegion').value = regionText.trim();
+                break;
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // 3. 키워드/주소 검색
+    function searchPlace() {
+      const keyword = document.getElementById('searchInput').value.trim();
+      if (!keyword || !placesService) return;
+
+      placesService.keywordSearch(keyword, function(data, status) {
+        if (status === kakao.maps.services.Status.OK && data.length > 0) {
+          const first = data[0];
+          const lat = parseFloat(first.y);
+          const lng = parseFloat(first.x);
+          setLocationOnMap(lat, lng);
+
+          if (!document.getElementById('placeName').value) {
+            document.getElementById('placeName').value = first.place_name;
+          }
+        } else {
+          alert('검색 결과가 없습니다. 다른 검색어를 입력해 보세요.');
+        }
+      });
+    }
+
+    // 4. 분류 버튼 선택
+    function selectCategory(type, label, btnEl) {
+      selectedType = type;
+      selectedCategoryLabel = label;
+
+      const buttons = document.querySelectorAll('.cat-btn');
+      buttons.forEach(function(b) { b.classList.remove('active'); });
+      btnEl.classList.add('active');
+
+      // 산책 코스일 때만 GPX 업로드 표시
+      const gpxSec = document.getElementById('gpxSection');
+      if (type === 'course') {
+        gpxSec.style.display = 'block';
+      } else {
+        gpxSec.style.display = 'none';
+      }
+    }
+
+    // 5. 빠른 입력 칩 클릭
+    function setFieldValue(fieldId, text) {
+      document.getElementById(fieldId).value = text;
+    }
+
+    // 6. GPX 파일 브라우저 내부 파싱 (외부 전송 없음)
+    function handleGpxFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const xmlText = e.target.result;
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+        const trkpts = xmlDoc.getElementsByTagName('trkpt');
+
+        const rawPoints = [];
+        for (let i = 0; i < trkpts.length; i++) {
+          const lat = parseFloat(trkpts[i].getAttribute('lat'));
+          const lon = parseFloat(trkpts[i].getAttribute('lon'));
+          if (!isNaN(lat) && !isNaN(lon)) {
+            rawPoints.push([Number(lat.toFixed(6)), Number(lon.toFixed(6))]);
+          }
+        }
+
+        if (rawPoints.length === 0) {
+          alert('GPX 파일에서 경로 좌표(trkpt)를 찾지 못했습니다.');
+          return;
+        }
+
+        // 웹사이트 2.5초 로딩 속도를 위해 좌표 개수를 최대 250개 이내로 경량화
+        const maxPoints = 250;
+        const step = Math.max(1, Math.ceil(rawPoints.length / maxPoints));
+        parsedGpxPath = rawPoints.filter(function(_, idx) {
+          return idx % step === 0 || idx === rawPoints.length - 1;
+        });
+
+        document.getElementById('gpxStatus').innerText =
+          '✅ ' + file.name + ' 로드 완료 (원본 ' + rawPoints.length + '개 → 최적화 ' + parsedGpxPath.length + '개 좌표)';
+
+        // 시작점을 대표 위치로 자동 세팅
+        setLocationOnMap(parsedGpxPath[0][0], parsedGpxPath[0][1]);
+
+        // 지도에 경로선 미리보기 표시
+        if (currentPolyline) {
+          currentPolyline.setMap(null);
+        }
+        const kakaoPath = parsedGpxPath.map(function(pt) {
+          return new kakao.maps.LatLng(pt[0], pt[1]);
+        });
+        currentPolyline = new kakao.maps.Polyline({
+          map: map,
+          path: kakaoPath,
+          strokeWeight: 5,
+          strokeColor: '#8C6239',
+          strokeOpacity: 0.9,
+          strokeStyle: 'solid'
+        });
+
+        const bounds = new kakao.maps.LatLngBounds();
+        kakaoPath.forEach(function(latlng) { bounds.extend(latlng); });
+        map.setBounds(bounds);
+      };
+      reader.readAsText(file);
+    }
+
+    // 드래그 앤 드롭 이벤트 연결
+    const dropZone = document.getElementById('gpxDropZone');
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropZone.style.backgroundColor = '#E5DEC9';
+    });
+    dropZone.addEventListener('dragleave', function() {
+      dropZone.style.backgroundColor = '#FAF6F0';
+    });
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.style.backgroundColor = '#FAF6F0';
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        handleGpxFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    // 7. JSON 데이터 생성 (지도 독립형 표준 포맷)
+    function generateJsonData() {
+      const name = document.getElementById('placeName').value.trim();
+      const region = document.getElementById('placeRegion').value.trim();
+      const lat = parseFloat(document.getElementById('placeLat').value);
+      const lng = parseFloat(document.getElementById('placeLng').value);
+      const condition = document.getElementById('petCondition').value.trim();
+      const sizeLimit = document.getElementById('sizeLimit').value.trim();
+      const note = document.getElementById('placeNote').value.trim();
+      const photo = document.getElementById('placePhoto').value.trim();
+
+      if (!name) {
+        alert('장소 이름을 입력해 주세요.');
+        return;
+      }
+      if (isNaN(lat) || isNaN(lng)) {
+        alert('지도를 클릭하거나 검색하여 위치를 지정해 주세요.');
+        return;
+      }
+
+      const newItem = {
+        id: selectedType + '-' + Date.now(),
+        type: selectedType,
+        categoryLabel: selectedCategoryLabel,
+        name: name,
+        region: region || '고양시',
+        lat: lat,
+        lng: lng,
+        condition: condition || '동반 가능',
+        size: sizeLimit || '모든 견종',
+        note: note,
+        photos: photo ? [photo] : [],
+        path: selectedType === 'course' ? parsedGpxPath : []
+      };
+
+      savedPlacesList.push(newItem);
+      document.getElementById('itemCount').innerText = savedPlacesList.length;
+      document.getElementById('jsonOutput').innerText = JSON.stringify(savedPlacesList, null, 2);
+    }
+
+    // 8. 클립보드 복사
+    function copyJsonText() {
+      if (savedPlacesList.length === 0) {
+        alert('먼저 [데이터 생성하기] 버튼을 눌러주세요.');
+        return;
+      }
+      const text = JSON.stringify(savedPlacesList, null, 2);
+      navigator.clipboard.writeText(text).then(function() {
+        alert('JSON 코드가 복사되었습니다!');
+      });
+    }
+
+    // 9. places.json 파일로 바로 다운로드
+    function downloadJsonFile() {
+      if (savedPlacesList.length === 0) {
+        alert('먼저 [데이터 생성하기] 버튼을 눌러 데이터를 추가해 주세요.');
+        return;
+      }
+      const dataStr = JSON.stringify(savedPlacesList, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'places.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.addEventListener('DOMContentLoaded', initKakaoMap);
+  </script>
+</body>
+</html>
