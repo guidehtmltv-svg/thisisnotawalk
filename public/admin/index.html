@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>코스·스팟 등록 도구</title>
+<title>포스트 등록 — 일,요사진이 걸어본 길</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <style>
@@ -11,7 +11,7 @@
   body { font-family: "Helvetica Neue", Helvetica, Pretendard, -apple-system, sans-serif; background: #F5EFE7; color: #181818; font-size: 18px; height: 100vh; display: flex; flex-direction: column; overflow: hidden; letter-spacing: -0.015em; }
   header { background: #181818; color: #F5EFE7; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
   header h1 { font-size: 20px; font-weight: 700; }
-  header span { font-size: 14px; color: #B8B2A8; }
+  .token-btn { font-size: 14px; padding: 6px 12px; background: #333; color: #F5EFE7; border: 1px solid #555; border-radius: 6px; cursor: pointer; }
   .workspace { display: flex; flex: 1; overflow: hidden; }
   .map-pane { flex: 1.1; display: flex; flex-direction: column; border-right: 1px solid #D5CEC2; position: relative; }
   .search-bar { padding: 14px; display: flex; gap: 8px; border-bottom: 1px solid #D5CEC2; background: #F5EFE7; }
@@ -32,19 +32,19 @@
   .coord-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
   .gpx-box { border: 2px dashed #8C6239; background: #FAF6F0; border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; }
   .gpx-status { margin-top: 6px; font-size: 15px; color: #8C6239; font-weight: 600; }
-  .actions { display: flex; gap: 10px; margin-top: 24px; padding-top: 16px; border-top: 1.5px solid #D5CEC2; }
-  .btn-main { flex: 1; font-size: 19px; font-weight: 700; padding: 14px; background: #181818; color: #F5EFE7; border: none; border-radius: 8px; cursor: pointer; }
-  .btn-sub { font-size: 18px; font-weight: 600; padding: 14px 20px; background: #8C6239; color: #FFF; border: none; border-radius: 8px; cursor: pointer; }
-  .out-box { margin-top: 24px; background: #FFF; border: 1.5px solid #D5CEC2; border-radius: 8px; padding: 16px; }
-  .out-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .copy-btn { font-size: 15px; font-weight: 600; padding: 6px 14px; background: #181818; color: #F5EFE7; border: none; border-radius: 6px; cursor: pointer; }
-  pre { background: #181818; color: #F5EFE7; padding: 14px; border-radius: 6px; font-size: 14px; overflow-x: auto; white-space: pre-wrap; max-height: 240px; }
+  .btn-post { width: 100%; font-size: 20px; font-weight: 700; padding: 16px; background: #181818; color: #F5EFE7; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+  .btn-post:disabled { background: #888; cursor: wait; }
+  .post-list { margin-top: 28px; border-top: 2px solid #D5CEC2; padding-top: 20px; }
+  .post-item { background: #FFF; border: 1px solid #D5CEC2; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .post-info strong { font-size: 17px; display: block; }
+  .post-info span { font-size: 14px; color: #66635E; }
+  .del-btn { font-size: 14px; padding: 6px 12px; background: #FEE2E2; color: #991B1B; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
 </style>
 </head>
 <body>
 <header>
-  <h1>일,요사진이 걸어본 길 — 코스·스팟 등록 도구</h1>
-  <span>Helvetica / Pretendard · 외부 전송 없음</span>
+  <h1>일,요사진이 걸어본 길 — 게시판 포스트 등록</h1>
+  <button type="button" class="token-btn" onclick="setupToken()">🔑 깃허브 암호 설정</button>
 </header>
 <div class="workspace">
   <div class="map-pane">
@@ -53,7 +53,7 @@
       <button type="button" onclick="searchPlace()">검색</button>
     </div>
     <div id="map"></div>
-    <div class="map-tip">💡 지도를 클릭하거나 검색하면 좌표와 지역명이 자동 입력됩니다.</div>
+    <div class="map-tip">💡 지도를 클릭하거나 검색하면 위치가 자동 입력됩니다.</div>
   </div>
   <div class="form-pane">
     <div class="fg">
@@ -73,12 +73,12 @@
       <label class="fl">3. 지역 및 좌표 <span class="sub">(지도 클릭 시 자동 입력)</span></label>
       <input type="text" id="placeRegion" placeholder="예: 고양시 일산서구">
       <div class="coord-row">
-        <input type="text" id="placeLat" placeholder="위도 (lat)" readonly>
-        <input type="text" id="placeLng" placeholder="경도 (lng)" readonly>
+        <input type="text" id="placeLat" placeholder="위도" readonly>
+        <input type="text" id="placeLng" placeholder="경도" readonly>
       </div>
     </div>
     <div class="fg" id="gpxSection">
-      <label class="fl">4. GPX 파일 <span class="sub">(클릭 또는 파일 끌어놓기)</span></label>
+      <label class="fl">4. GPX 파일 <span class="sub">(클릭 또는 끌어놓기)</span></label>
       <div class="gpx-box" id="gpxDropZone" onclick="document.getElementById('gpxInput').click()">
         <div>📂 클릭하거나 GPX 파일을 이곳에 끌어다 놓으세요</div>
         <div class="gpx-status" id="gpxStatus">선택된 파일 없음</div>
@@ -113,19 +113,42 @@
       <label class="fl">8. 사진 파일 자리 <span class="sub">(비워두셔도 됩니다)</span></label>
       <input type="text" id="placePhoto" placeholder="예: /images/sample.jpg">
     </div>
-    <div class="actions">
-      <button type="button" class="btn-main" onclick="addPlace()">데이터 생성하기</button>
-      <button type="button" class="btn-sub" onclick="downloadJson()">JSON 파일 저장</button>
-    </div>
-    <div class="out-box">
-      <div class="out-head">
-        <strong>생성된 데이터 (<span id="cnt">0</span>개)</strong>
-        <button type="button" class="copy-btn" onclick="copyJson()">코드 복사</button>
-      </div>
-      <pre id="jsonOut">아직 생성된 데이터가 없습니다.</pre>
+    <button type="button" id="postBtn" class="btn-post" onclick="submitPost()">🚀 포스트 바로 등록</button>
+    <div class="post-list">
+      <label class="fl">등록된 포스트 목록 (<span id="cnt">0</span>개)</label>
+      <div id="listBox">불러오는 중...</div>
     </div>
   </div>
 </div>
 <script>
+  const REPO = 'guidehtmltv-svg/thisisnotawalk';
+  const FILE_PATH = 'public/data/places.json';
   let map, marker, polyline, geocoder, places;
-  let selType = 'course', selLabel
+  let selType = 'course', selLabel = '산책 코스', gpxPath = [], list = [], fileSha = '';
+
+  function setupToken() {
+    const t = prompt('깃허브 토큰(ghp_... 또는 github_pat_...)을 입력해 주세요.\n(한 번만 입력하면 이 컴퓨터에 기억됩니다)', localStorage.getItem('gh_token') || '');
+    if (t !== null) { localStorage.setItem('gh_token', t.trim()); loadExistingPosts(); }
+  }
+
+  async function loadExistingPosts() {
+    const box = document.getElementById('listBox');
+    try {
+      const token = localStorage.getItem('gh_token') || '';
+      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+      const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + FILE_PATH, { headers, cache: 'no-store' });
+      if (res.status === 404) { list = []; fileSha = ''; renderList(); return; }
+      const data = await res.json();
+      fileSha = data.sha;
+      const jsonStr = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+      list = JSON.parse(jsonStr);
+      renderList();
+    } catch (e) {
+      box.innerHTML = '<div style="color:#666;font-size:15px;">아직 등록된 글이 없거나 암호 설정 전입니다.</div>';
+    }
+  }
+
+  function renderList() {
+    document.getElementById('cnt').innerText = list.length;
+    const box = document.getElementById('listBox');
+    if (!list.length) { box.innerHTML = '<div style="color:#666;font-size:
