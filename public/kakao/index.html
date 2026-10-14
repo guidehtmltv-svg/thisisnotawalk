@@ -32,7 +32,7 @@ body.has-sheet .tools{bottom:calc(var(--sheet-h,0px) + 18px)}
 .pin{display:block;border:0;padding:0;background:none;position:relative;width:40px;height:48px;isolation:isolate;--c:var(--ink)}
 .pin .bd{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--paper);border:2px solid var(--c);color:var(--c);box-shadow:0 2px 6px rgba(36,33,29,.3)}
 .pin::after{content:"";position:absolute;left:50%;bottom:3px;width:12px;height:12px;background:var(--paper);border-right:2px solid var(--c);border-bottom:2px solid var(--c);transform:translateX(-50%) rotate(45deg);z-index:-1}
-.pin.course{--c:var(--ink)}.pin.planned{--c:#9A9286}.pin.cafe{--c:#8A4B2D}.pin.food{--c:#A8742F}.pin.vet{--c:#4F6F5E}.pin.etc{--c:#6B7F4E}
+.pin.course{--c:var(--ink)}.pin.planned{--c:#9A9286}.pin.cafe{--c:#8A4B2D}.pin.food{--c:#A8742F}.pin.park{--c:#6B7F4E}.pin.facility{--c:#3D6E9E}.pin.etc{--c:#6B7F4E}
 .pin.planned .bd{border-style:dashed}
 .pin.sel{transform:scale(1.18);transform-origin:50% 100%}
 .pin.sel .bd{background:var(--c);color:var(--paper)}.pin.sel::after{background:var(--c)}
@@ -89,16 +89,17 @@ const COURSES=[
   {id:'jeongbalsan',kind:'course',status:'walked',name:'정발산 둘레 흙길',area:'고양시 일산동구 마두동',start:{name:'정발산공원 공영주차장',lat:SAMPLE_ROUTE[0][0],lng:SAMPLE_ROUTE[0][1]},km:2.1,min:40,condition:'흙길 80%, 야자매트 20%',size:'모든 견종',date:'2026.10.13 · 일로, 요이',note:'평일 오전은 한적합니다.',route:SAMPLE_ROUTE}
 ];
 const SPOTS=[];
-const KINDS={course:'산책 코스',cafe:'카페',food:'식당',vet:'동물병원',etc:'기타'};
+const KINDS={course:'산책 코스',park:'공원 · 운동장',cafe:'카페',food:'식당',facility:'편의시설',etc:'기타'};
 const IC={
 course:'<path d="M6 18c6 0 0-7 6-7s6-5 6-5"/><circle cx="6" cy="18" r="1.4" fill="currentColor"/><circle cx="18" cy="6" r="1.8"/>',
 planned:'<path d="M6 18c6 0 0-7 6-7s6-5 6-5" stroke-dasharray="2 2.6"/><circle cx="18" cy="6" r="1.8" stroke-dasharray="2 2"/>',
 cafe:'<path d="M5.5 9h10v5a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4z"/><path d="M15.5 10.5h1.2a2 2 0 0 1 0 4h-1.2"/><path d="M9 3.5c-.9 1 .9 1.6 0 2.7M12.2 3.5c-.9 1 .9 1.6 0 2.7"/>',
 food:'<path d="M6 4v5a2 2 0 0 0 4 0V4M8 4v16"/><path d="M16.5 20V4c-2 1.4-3.3 4-3.3 7h3.3"/>',
-vet:'<path d="M12 6v12M6 12h12" stroke-width="2.4"/>',
+park:'<path d="M12 20v-5"/><path d="M12 4c-3.5 0-5.6 3-5 5.4-1.5 1-2 3.6.6 5.1 1.2.7 2.7.5 4.4.5s3.2.2 4.4-.5c2.6-1.5 2.1-4.1.6-5.1.6-2.4-1.5-5.4-5-5.4z"/>',
+facility:'<path d="M5 11h14M6.5 11V8a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v3M7.5 11v6M16.5 11v6M5 14.5h14"/>',
 etc:'<circle cx="6.5" cy="10.5" r="1.7"/><circle cx="10" cy="6.5" r="1.7"/><circle cx="14" cy="6.5" r="1.7"/><circle cx="17.5" cy="10.5" r="1.7"/><path d="M12 12.5c-2.8 0-5 2.5-4.4 4.8.4 1.5 1.8 1.7 4.4 1.7s4-.2 4.4-1.7c.6-2.3-1.6-4.8-4.4-4.8z"/>'};
 const svgIcon=(k,s)=>IC[k]?`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`:'';
-const FILTERS=[['all','전체'],['course','산책 코스'],['cafe','카페'],['food','식당'],['vet','동물병원']];
+const FILTERS=[['all','전체'],['course','산책 코스'],['park','공원'],['cafe','카페'],['food','식당'],['facility','편의시설']];
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -127,7 +128,7 @@ function loadKakao(){
 
 fetch('/data/places.json?t='+Date.now()).then(r=>r.ok?r.json():[]).catch(()=>[]).then(list=>{
   if(Array.isArray(list)) list.slice().reverse().forEach(d=>{
-    const k={course:'course',cafe:'cafe',restaurant:'food',hospital:'vet'}[d.type]||'etc';
+    const k={course:'course',cafe:'cafe',restaurant:'food',park:'park',facility:'facility'}[d.type]||'etc';
     const rt=d.path&&d.path.length>1?d.path:null, km=rt?Number(pathKm(rt).toFixed(1)):0;
     if(k==='course') COURSES.unshift({id:d.id,kind:'course',status:'walked',name:d.name,area:d.region,start:{name:d.name,lat:rt?rt[0][0]:d.lat,lng:rt?rt[0][1]:d.lng},at:[d.lat,d.lng],km,min:Math.round(km*18)||20,condition:d.condition,size:d.size,date:d.date,photo:d.photo,photoTip:d.photoTip,instaUrl:d.instaUrl,note:d.note,route:rt});
     else SPOTS.unshift({id:d.id,kind:k,name:d.name,area:d.region,at:[d.lat,d.lng],rule:d.condition,size:d.size,date:d.date,photo:d.photo,photoTip:d.photoTip,instaUrl:d.instaUrl,note:d.note});

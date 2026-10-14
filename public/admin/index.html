@@ -24,7 +24,7 @@
   .fl { display: block; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
   .sub { font-size: 14px; color: #66635E; font-weight: 400; }
   input[type="text"], textarea { width: 100%; font-family: inherit; font-size: 18px; padding: 11px 14px; border: 1.5px solid #D5CEC2; border-radius: 6px; background: #FFF; }
-  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .cat-btn { font-family: inherit; font-size: 17px; font-weight: 600; padding: 12px 6px; border: 1.5px solid #D5CEC2; background: #FFF; border-radius: 6px; cursor: pointer; }
   .cat-btn.active { background: #181818; color: #F5EFE7; border-color: #181818; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
@@ -66,7 +66,8 @@
         <button type="button" class="cat-btn active" data-t="course" onclick="selectCat('course','산책 코스',this)">산책 코스</button>
         <button type="button" class="cat-btn" data-t="cafe" onclick="selectCat('cafe','반려견 동반 · 카페',this)">카페</button>
         <button type="button" class="cat-btn" data-t="restaurant" onclick="selectCat('restaurant','반려견 동반 · 식당',this)">식당</button>
-        <button type="button" class="cat-btn" data-t="hospital" onclick="selectCat('hospital','동물병원',this)">동물병원</button>
+        <button type="button" class="cat-btn" data-t="park" onclick="selectCat('park','공원 · 운동장',this)">공원</button>
+        <button type="button" class="cat-btn" data-t="facility" onclick="selectCat('facility','편의시설',this)">편의시설</button>
       </div>
     </div>
     <div class="fg">
