@@ -33,6 +33,10 @@
   .gpx-box, .img-box { border: 2px dashed #8C6239; background: #FAF6F0; border-radius: 8px; padding: 16px; text-align: center; cursor: pointer; }
   .gpx-status, .img-status { margin-top: 6px; font-size: 15px; color: #8C6239; font-weight: 600; }
   .btn-row { display: flex; gap: 8px; margin-top: 10px; }
+  .pub-btn { font-family: inherit; font-size: 16px; font-weight: 600; padding: 12px 6px; border: 1.5px solid #D5CEC2; background: #FFF; border-radius: 6px; cursor: pointer; }
+  .pub-btn.active { background: #181818; color: #F5EFE7; border-color: #181818; }
+  .badge-draft { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #E5DEC9; color: #6B4A1E; margin-right: 4px; }
+  .pub-toggle { font-size: 14px; padding: 6px 12px; background: #FFF; color: #181818; border: 1.5px solid #181818; border-radius: 6px; cursor: pointer; font-weight: 600; }
   .btn-post { flex: 1; font-size: 20px; font-weight: 700; padding: 16px; background: #181818; color: #F5EFE7; border: none; border-radius: 8px; cursor: pointer; }
   .btn-post.editing { background: #8C6239; }
   .btn-cancel { font-size: 17px; font-weight: 600; padding: 16px 20px; background: #D5CEC2; color: #181818; border: none; border-radius: 8px; cursor: pointer; display: none; }
@@ -128,6 +132,13 @@
       <label class="fl">11. 메모 (주차 · 특징 · 팁)</label>
       <textarea id="placeNote" rows="3" placeholder="예: 평일 오전이 한적합니다."></textarea>
     </div>
+    <div class="fg">
+      <label class="fl">12. 공개 여부 <span class="sub">(비공개는 지도에도, 공개 데이터 파일에도 들어가지 않아요)</span></label>
+      <div class="cat-grid" style="grid-template-columns:1fr 1fr">
+        <button type="button" class="pub-btn active" id="pubDraft" onclick="setPub(true)">비공개 (임시 저장)</button>
+        <button type="button" class="pub-btn" id="pubLive" onclick="setPub(false)">공개 (지도에 표시)</button>
+      </div>
+    </div>
     <div class="btn-row">
       <button type="button" id="postBtn" class="btn-post" onclick="submitPost()">🚀 포스트 바로 등록</button>
       <button type="button" id="cancelBtn" class="btn-cancel" onclick="resetForm()">취소</button>
@@ -142,6 +153,10 @@
   const REPO = 'guidehtmltv-svg/thisisnotawalk', FILE_PATH = 'public/data/places.json';
   let map = null, marker = null, polyline = null, geocoder = null, places = null;
   let nameTouched = false;
+  let pubDraft = true, draftSha = '', lastPubStr = '[]', lastDraftStr = '[]', lastDraftCount = 0;
+  const DRAFT_PATH = 'data/drafts.json';
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function setPub(d) { pubDraft = d; document.getElementById('pubDraft').classList.toggle('active', d); document.getElementById('pubLive').classList.toggle('active', !d); }
   let selType = 'course', selLabel = '산책 코스', gpxPath = [], imageData = null, imageName = '', list = [], fileSha = '', editIdx = -1;
 
   function todayStr() {
@@ -154,17 +169,23 @@
     if (t && t.trim()) { localStorage.setItem('gh_token', t.trim()); alert('저장되었습니다!'); loadExistingPosts(); }
   }
 
+  async function getJSON(path) {
+    const token = localStorage.getItem('gh_token') || '';
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, { headers, cache: 'no-store' });
+    if (res.status === 404) return { sha: '', data: [] };
+    if (!res.ok) throw new Error();
+    const d = await res.json();
+    return { sha: d.sha, data: JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g, ''))))) };
+  }
+
   async function loadExistingPosts() {
     const box = document.getElementById('listBox');
     try {
-      const token = localStorage.getItem('gh_token') || '';
-      const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-      const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + FILE_PATH, { headers, cache: 'no-store' });
-      if (res.status === 404) { list = []; fileSha = ''; renderList(); return; }
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-      fileSha = data.sha;
-      list = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))));
+      const [p, d] = await Promise.all([getJSON(FILE_PATH), getJSON(DRAFT_PATH)]);
+      fileSha = p.sha; draftSha = d.sha;
+      lastPubStr = JSON.stringify(p.data); lastDraftStr = JSON.stringify(d.data); lastDraftCount = d.data.length;
+      list = [...d.data.map(x => ({ ...x, draft: true })), ...p.data];
       renderList();
     } catch (e) {
       box.innerHTML = '<div style="color:#666;font-size:15px;">등록된 글이 없거나 암호 설정 전입니다.</div>';
@@ -178,10 +199,11 @@
     box.innerHTML = list.map((item, idx) => `
       <div class="post-item">
         <div class="post-info">
-          <strong>[${item.categoryLabel || '기록'}] ${item.name}</strong>
-          <span>${item.region || ''} · ${item.date || '날짜 미기재'}</span>
+          <strong>${item.draft ? '<span class="badge-draft">비공개</span>' : ''}[${esc(item.categoryLabel || '기록')}] ${esc(item.name)}</strong>
+          <span>${esc(item.region || '')} · ${esc(item.date || '날짜 미기재')}</span>
         </div>
         <div class="item-btns">
+          <button type="button" class="pub-toggle" onclick="togglePub(${idx})">${item.draft ? '공개로' : '비공개로'}</button>
           <button type="button" class="edit-btn" onclick="editPost(${idx})">수정</button>
           <button type="button" class="del-btn" onclick="deletePost(${idx})">삭제</button>
         </div>
@@ -191,7 +213,7 @@
 
   function editPost(idx) {
     const it = list[idx]; if (!it) return;
-    editIdx = idx;
+    editIdx = idx; setPub(!!it.draft);
     const btn = document.querySelector(`.cat-btn[data-t="${it.type||'course'}"]`) || document.querySelector('.cat-btn');
     selectCat(it.type || 'course', it.categoryLabel || '산책 코스', btn);
     document.getElementById('placeName').value = it.name || ''; nameTouched = true;
@@ -217,7 +239,7 @@
   }
 
   function resetForm() {
-    editIdx = -1;
+    editIdx = -1; setPub(true);
     document.getElementById('placeName').value = ''; nameTouched = false;
     document.getElementById('photoTip').value = '';
     document.getElementById('instaUrl').value = '';
@@ -247,11 +269,24 @@
     return '/' + path.replace(/^public\//, '');
   }
 
+  async function putFile(path, obj, sha, msg, token) {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(obj, null, 2))));
+    const body = { message: msg, content: content, branch: 'main' };
+    if (sha) body.sha = sha;
+    const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) throw new Error((res.status === 409 || res.status === 422) ? '다른 기기에서 먼저 저장한 내용이 있어요. 화면을 새로고침한 뒤 다시 시도해 주세요.' : '저장 실패! 암호(토큰)를 확인해 주세요.');
+    return (await res.json()).content.sha;
+  }
+
   async function saveToGitHub(newList, msg) {
     let token = localStorage.getItem('gh_token');
     if (!token) { setupToken(); token = localStorage.getItem('gh_token'); if (!token) return; }
     const btn = document.getElementById('postBtn');
-    btn.disabled = true; btn.innerText = '고화질 사진 및 데이터 저장 중...';
+    btn.disabled = true; btn.innerText = '저장 중...';
     try {
       if (editIdx >= 0 && !imageData && list[editIdx].photo) {
         newList[editIdx].photo = list[editIdx].photo;
@@ -260,27 +295,31 @@
         if (editIdx >= 0) newList[editIdx].photo = imgPath;
         else newList[0].photo = imgPath;
       }
-      const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(newList, null, 2))));
-      const body = { message: msg, content: contentBase64, branch: 'main' };
-      if (fileSha) body.sha = fileSha;
-      const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + FILE_PATH, {
-        method: 'PUT',
-        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      });
-      if (!res.ok) throw new Error('저장 실패! 암호(토큰)를 확인해 주세요.');
-      const resData = await res.json();
-      fileSha = resData.content.sha;
+      // 공개 글은 공개 파일에, 비공개 글은 사이트에 올라가지 않는 별도 파일에 둔다
+      const pub = newList.filter(x => !x.draft).map(({ draft, ...r }) => r);
+      const dr = newList.filter(x => x.draft).map(({ draft, ...r }) => r);
+      const pubStr = JSON.stringify(pub), drStr = JSON.stringify(dr);
+      const writePub = async () => { if (pubStr !== lastPubStr) { fileSha = await putFile(FILE_PATH, pub, fileSha, msg, token); lastPubStr = pubStr; } };
+      const writeDr = async () => { if (drStr !== lastDraftStr) { draftSha = await putFile(DRAFT_PATH, dr, draftSha, msg + ' (비공개)', token); lastDraftStr = drStr; lastDraftCount = dr.length; } };
+      const pubChanged = pubStr !== lastPubStr;
+      // 글이 사라지는 일이 없게: 늘어나는 쪽 파일을 먼저 쓴다
+      if (dr.length > lastDraftCount) { await writeDr(); await writePub(); } else { await writePub(); await writeDr(); }
       list = newList;
       renderList();
       resetForm();
-      alert('✅ 포스트와 포트폴리오 사진이 성공적으로 반영되었습니다!');
+      alert(pubChanged ? '✅ 저장했어요. 지도에는 1~3분 뒤에 반영돼요.' : '✅ 비공개로 저장했어요. 지도에는 보이지 않아요.');
     } catch (e) {
       alert(e.message);
       btn.innerText = editIdx >= 0 ? '💾 수정 내용 저장하기' : '🚀 포스트 바로 등록';
     } finally {
       btn.disabled = false;
     }
+  }
+
+  function togglePub(idx) {
+    const it = list[idx]; if (!it) return;
+    if (!it.draft && !confirm('이 글을 비공개로 바꾸면 지도에서 사라져요. 계속할까요?')) return;
+    saveToGitHub(list.map((x, i) => i === idx ? { ...x, draft: !x.draft } : x), (it.draft ? '공개 전환: ' : '비공개 전환: ') + it.name);
   }
 
   function submitPost() {
@@ -300,7 +339,8 @@
       size: document.getElementById('sizeLim').value.trim() || '모든 견종',
       date: document.getElementById('walkDate').value.trim() || todayStr(),
       note: document.getElementById('placeNote').value.trim(),
-      path: selType === 'course' ? gpxPath : []
+      path: selType === 'course' ? gpxPath : [],
+      draft: pubDraft
     };
     const next = [...list];
     if (editIdx >= 0) next[editIdx] = item; else next.unshift(item);

@@ -48,3 +48,8 @@
 - 규칙: **파일을 통째로 쓸 때는 끝까지 써졌는지 확인한다** (마지막 줄이 `</html>`인지, 파일 크기가 맞는지). 긴 파일은 나눠서 쓴다.
 - 규칙: `main`에 직접 올리지 않는다. 확인용은 `public/kakao/`, `public/new/` 같은 하위 폴더에 올린다.
 - 카카오 지도 시험판은 `public/kakao/index.html`. 키는 공개용 JavaScript 키라 코드에 들어가도 되지만, 콘솔에 등록된 주소(https://thisisnotawalk.com)에서만 동작한다.
+
+## 공개/비공개 (2026-10-17)
+- 관리 화면에서 새 글은 기본 **비공개**. 공개 글은 `public/data/places.json`(사이트에 올라감), 비공개 글은 `data/drafts.json`(`public/` 밖이라 사이트에 올라가지 않음)에 둔다. 목록의 [공개로/비공개로] 버튼으로 옮긴다.
+- 지도 화면(`public/index.html`)은 `places.json`만 읽는다. 비공개 글을 지도에 보이게 하려고 `drafts.json`을 `public/`으로 옮기지 말 것.
+- 저장 후 사이트 반영에는 1~3분이 걸린다(Cloudflare 배포). 글이 늦게 바뀌어 보이는 건 정상.
