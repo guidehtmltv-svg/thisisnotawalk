@@ -1,5 +1,21 @@
 [
   {
+    "id": "restaurant-1792203528442",
+    "type": "restaurant",
+    "categoryLabel": "반려견 동반 · 식당",
+    "name": "매드포갈릭 스타필드빌리지운정점",
+    "region": "경기 파주시 와석순환로515번길 70",
+    "lat": 37.727957,
+    "lng": 126.765992,
+    "photoTip": "",
+    "instaUrl": "",
+    "condition": "동반 가능",
+    "size": "모든 견종",
+    "date": "2026.10.17",
+    "note": "",
+    "path": []
+  },
+  {
     "id": "course-1792203329052",
     "type": "cafe",
     "categoryLabel": "반려견 동반 · 카페",
