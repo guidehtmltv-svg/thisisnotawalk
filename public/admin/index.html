@@ -72,15 +72,16 @@
     </div>
     <div class="fg">
       <label class="fl">2. 장소 / 코스 이름</label>
-      <input type="text" id="placeName" placeholder="예: 정발산 둘레 흙길">
+      <input type="text" id="placeName" placeholder="예: 정발산 둘레 흙길" oninput="nameTouched = true">
     </div>
     <div class="fg">
-      <label class="fl">3. 지역 및 좌표 <span class="sub">(지도 클릭 시 자동 입력)</span></label>
-      <input type="text" id="placeRegion" placeholder="예: 고양시 일산서구">
-      <div class="coord-row">
+      <label class="fl">3. 주소 <span class="sub">(검색하거나 지도를 누르면 자동 입력 · 직접 고쳐도 돼요)</span></label>
+      <input type="text" id="placeRegion" placeholder="예: 경기도 파주시 운정중앙로 000">
+      <details style="margin-top:8px;color:#625C53;font-size:14px"><summary style="cursor:pointer">좌표 보기 (자동 입력)</summary>
+      <div class="coord-row" style="margin-top:6px">
         <input type="text" id="placeLat" placeholder="위도">
         <input type="text" id="placeLng" placeholder="경도">
-      </div>
+      </div></details>
     </div>
     <div class="fg" id="gpxSection">
       <label class="fl">4. GPX 파일 <span class="sub">(산책 코스용)</span></label>
@@ -140,6 +141,7 @@
 <script>
   const REPO = 'guidehtmltv-svg/thisisnotawalk', FILE_PATH = 'public/data/places.json';
   let map = null, marker = null, polyline = null, geocoder = null, places = null;
+  let nameTouched = false;
   let selType = 'course', selLabel = '산책 코스', gpxPath = [], imageData = null, imageName = '', list = [], fileSha = '', editIdx = -1;
 
   function todayStr() {
@@ -192,7 +194,7 @@
     editIdx = idx;
     const btn = document.querySelector(`.cat-btn[data-t="${it.type||'course'}"]`) || document.querySelector('.cat-btn');
     selectCat(it.type || 'course', it.categoryLabel || '산책 코스', btn);
-    document.getElementById('placeName').value = it.name || '';
+    document.getElementById('placeName').value = it.name || ''; nameTouched = true;
     document.getElementById('placeRegion').value = it.region || '';
     document.getElementById('placeLat').value = it.lat || '';
     document.getElementById('placeLng').value = it.lng || '';
@@ -216,7 +218,7 @@
 
   function resetForm() {
     editIdx = -1;
-    document.getElementById('placeName').value = '';
+    document.getElementById('placeName').value = ''; nameTouched = false;
     document.getElementById('photoTip').value = '';
     document.getElementById('instaUrl').value = '';
     document.getElementById('petCond').value = '';
@@ -290,7 +292,7 @@
     const item = {
       id: editIdx >= 0 ? list[editIdx].id : (selType + '-' + Date.now()),
       type: selType, categoryLabel: selLabel, name: name,
-      region: document.getElementById('placeRegion').value.trim() || '고양시 일산서구',
+      region: document.getElementById('placeRegion').value.trim() || '',
       lat: lat, lng: lng,
       photoTip: document.getElementById('photoTip').value.trim(),
       instaUrl: document.getElementById('instaUrl').value.trim(),
@@ -319,7 +321,7 @@
     document.getElementById('gpxSection').style.display = (type === 'course') ? 'block' : 'none';
   }
 
-  function setLoc(lat, lng, keepRegion) {
+  function setLoc(lat, lng, keepRegion, addr) {
     const la = Number(Number(lat).toFixed(6)), ln = Number(Number(lng).toFixed(6));
     document.getElementById('placeLat').value = la;
     document.getElementById('placeLng').value = ln;
@@ -328,7 +330,16 @@
     if (!marker) marker = new kakao.maps.Marker({ position: pos, map: map });
     else marker.setPosition(pos);
     map.panTo(pos);
-    if (geocoder && !keepRegion) {
+    // 산책 코스는 집 위치 노출을 막으려고 '시·구'까지만, 식당·카페 같은 장소는 전체 주소를 쓴다
+    if (!keepRegion && addr && selType !== 'course') { document.getElementById('placeRegion').value = addr; return; }
+    if (geocoder && !keepRegion && selType !== 'course') {
+      geocoder.coord2Address(ln, la, (res, st) => {
+        if (st === kakao.maps.services.Status.OK && res[0]) {
+          const a = (res[0].road_address && res[0].road_address.address_name) || (res[0].address && res[0].address.address_name) || '';
+          if (a) document.getElementById('placeRegion').value = a;
+        }
+      });
+    } else if (geocoder && !keepRegion) {
       geocoder.coord2RegionCode(ln, la, (res, st) => {
         if (st === kakao.maps.services.Status.OK) {
           const h = res.find(r => r.region_type === 'H') || res[0];
@@ -386,8 +397,8 @@
     if (!kw || !places) return;
     places.keywordSearch(kw, (data, st) => {
       if (st === kakao.maps.services.Status.OK && data.length > 0) {
-        setLoc(parseFloat(data[0].y), parseFloat(data[0].x));
-        if (!document.getElementById('placeName').value) document.getElementById('placeName').value = data[0].place_name;
+        setLoc(parseFloat(data[0].y), parseFloat(data[0].x), false, data[0].road_address_name || data[0].address_name);
+        if (!nameTouched) document.getElementById('placeName').value = data[0].place_name;
       } else alert('검색 결과가 없습니다.');
     });
   }
