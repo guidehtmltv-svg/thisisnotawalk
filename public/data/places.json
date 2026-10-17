@@ -1,21 +1,5 @@
 [
   {
-    "id": "course-1792203329052",
-    "type": "cafe",
-    "categoryLabel": "반려견 동반 · 카페",
-    "name": "펫츠마실",
-    "region": "경기도 고양시 일산동구",
-    "lat": 37.68684,
-    "lng": 126.805617,
-    "photoTip": "",
-    "instaUrl": "",
-    "condition": "동반 가능",
-    "size": "모든 견종",
-    "date": "2026.10.17",
-    "note": "",
-    "path": []
-  },
-  {
     "id": "course-1791953605102",
     "type": "course",
     "categoryLabel": "산책 코스",
