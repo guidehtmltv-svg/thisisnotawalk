@@ -421,15 +421,30 @@
     r.readAsText(file);
   }
 
-  function handleImage(file) {
+  // 사진 자동 축소: 긴 변 최대 1800px, JPEG 품질 0.86. (카드 사진은 폰에서 가로 약 1170px로 그려지므로 눈에 띄는 차이 없음.) 원본 파일은 건드리지 않는다.
+  const IMG_MAX = 1800, IMG_Q = 0.86;
+  function fmtSize(n) { return n >= 1048576 ? (n / 1048576).toFixed(1) + 'MB' : Math.round(n / 1024) + 'KB'; }
+  async function handleImage(file) {
     if (!file) return;
-    imageName = file.name;
-    const r = new FileReader();
-    r.onload = (e) => {
-      imageData = e.target.result;
-      document.getElementById('imgStatus').innerText = '✅ ' + file.name + ' 준비 완료';
-    };
-    r.readAsDataURL(file);
+    const st = document.getElementById('imgStatus');
+    st.innerText = '사진 줄이는 중…';
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      const k = Math.min(1, IMG_MAX / Math.max(bmp.width, bmp.height));
+      const w = Math.round(bmp.width * k), h = Math.round(bmp.height * k);
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const cx = cv.getContext('2d'); cx.imageSmoothingQuality = 'high'; cx.drawImage(bmp, 0, 0, w, h);
+      const blob = await new Promise(res => cv.toBlob(res, 'image/jpeg', IMG_Q));
+      if (!blob || blob.size >= file.size) throw new Error('keep-original');
+      imageName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+      imageData = await new Promise(res => { const r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(blob); });
+      st.innerText = '✅ ' + imageName + ' 준비 완료 (' + w + '×' + h + ', ' + fmtSize(file.size) + ' → ' + fmtSize(blob.size) + ')';
+    } catch (err) {
+      imageName = file.name;
+      const r = new FileReader();
+      r.onload = (e) => { imageData = e.target.result; st.innerText = '✅ ' + file.name + ' 준비 완료 (' + fmtSize(file.size) + ', 그대로 사용)'; };
+      r.readAsDataURL(file);
+    }
   }
 
   function searchPlace() {
