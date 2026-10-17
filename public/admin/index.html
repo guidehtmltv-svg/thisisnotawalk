@@ -359,6 +359,12 @@
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     document.getElementById('gpxSection').style.display = (type === 'course') ? 'block' : 'none';
+    // 코스로 잘못 시작했다가 카페·식당 등으로 바꾸면, 시·구까지만 있던 주소를 전체 주소로 다시 채운다
+    if (type !== 'course') {
+      const la = parseFloat(document.getElementById('placeLat').value), ln = parseFloat(document.getElementById('placeLng').value);
+      const reg = document.getElementById('placeRegion').value.trim();
+      if (!isNaN(la) && !isNaN(ln) && (!reg || (!/\d/.test(reg) && reg.split(/\s+/).length <= 3))) setLoc(la, ln, false);
+    }
   }
 
   function setLoc(lat, lng, keepRegion, addr) {
